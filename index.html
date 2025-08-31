@@ -23,23 +23,6 @@
             text-decoration: none;
             color: inherit;
         }
-        {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cormorant Garamond', serif;
-        }
-        
-        body {
-            color: #000;
-            line-height: 1.6;
-            background-color: #fff;
-        }
-        
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
         
         /* Шапка */
         header {
@@ -59,42 +42,7 @@
             font-size: 24px;
             font-weight: 700;
             letter-spacing: 2px;
-            font-family: 'Italiana', serif; /* Добавлен шрифт Italiana */
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 40px;
-            font-size: 16px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        nav ul li a:hover {
-            opacity: 0.7;
-        }
-        /* Шапка */
-        header {
-            padding: 30px 60px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.95);
-            transition: padding 0.3s ease;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            letter-spacing: 2px;
+            font-family: 'Italiana', serif;
         }
         
         nav ul {
@@ -213,9 +161,38 @@
             min-width: 300px;
         }
         
-        .product-gallery img {
+        .product-image-main {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        .product-image-main img {
             width: 100%;
             height: auto;
+        }
+        
+        .product-thumbnails {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .product-thumbnail {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .product-thumbnail:hover,
+        .product-thumbnail.active {
+            opacity: 1;
+        }
+        
+        .product-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
         
         .product-details {
@@ -456,10 +433,15 @@
             .product-container {
                 flex-direction: column;
             }
+            
+            .product-thumbnails {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet"> <!-- Добавлен шрифт Italiana -->
+    <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Шапка -->
@@ -555,63 +537,34 @@
     </footer>
 
     <script>
-        // Данные для галереи
-        const galleryItems = [
-            {
-                id: 1,
-                title: "Без названия, №20",
-                size: "48\" x 36\"",
-                price: "3 450 ₽",
-                image: "https://images.unsplash.com/photo-1543857778-c4a1a569eafe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: true,
+        // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее
+        const numberOfPaintings = 5; // Измените это число на количество ваших картин
+        
+        // Количество фотографий для каждой картины
+        const photosPerPainting = 3;
+        
+        // Автоматическое создание данных для галереи
+        const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
+            const paintingNumber = i + 1;
+            
+            // Создаем массив изображений для каждой картины
+            const images = Array.from({length: photosPerPainting}, (_, j) => {
+                const photoNumber = j + 1;
+                const globalImageNumber = (paintingNumber - 1) * photosPerPainting + photoNumber;
+                return `images/gallery/${paintingNumber}/${globalImageNumber}.jpg`;
+            });
+            
+            return {
+                id: paintingNumber,
+                title: `Без названия, №${paintingNumber}`,
+                size: paintingNumber % 2 === 0 ? '36" x 48"' : '48" x 36"',
+                price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
+                mainImage: images[0], // Первое изображение как основное
+                images: images, // Все изображения для галереи товара
+                soldOut: paintingNumber === 1, // Первая картина помечается как проданная
                 description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            },
-            {
-                id: 2,
-                title: "Без названия, №21",
-                size: "36\" x 48\"",
-                price: "3 450 ₽",
-                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: false,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            },
-            {
-                id: 3,
-                title: "Без названия, №23",
-                size: "48\" x 36\"",
-                price: "3 450 ₽",
-                image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: false,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            },
-            {
-                id: 4,
-                title: "Без названия, №1",
-                size: "36\" x 48\"",
-                price: "3 450 ₽",
-                image: "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: false,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            },
-            {
-                id: 5,
-                title: "Без названия, №16",
-                size: "30\" x 30\"",
-                price: "2 160 ₽",
-                image: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: false,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            },
-            {
-                id: 6,
-                title: "Без названия, №5",
-                size: "36\" x 48\"",
-                price: "3 450 ₽",
-                image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
-                soldOut: false,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            }
-        ];
+            };
+        });
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
@@ -638,7 +591,7 @@
                 const galleryItem = document.createElement('div');
                 galleryItem.className = 'gallery-item';
                 galleryItem.innerHTML = `
-                    <img src="${item.image}" alt="${item.title}">
+                    <img src="${item.mainImage}" alt="${item.title}">
                     <div class="gallery-item-overlay">
                         <div class="product-title">${item.title}</div>
                         <div class="product-price">${item.price}</div>
@@ -725,11 +678,24 @@
         // Показать страницу товара
         function showProduct(product) {
             const productPage = document.getElementById('product-page');
+            
+            // Создаем HTML для миниатюр
+            const thumbnailsHTML = product.images.map((image, index) => `
+                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
+                    <img src="${image}" alt="Миниатюра ${index + 1}">
+                </div>
+            `).join('');
+            
             productPage.innerHTML = `
                 <div class="back-button" id="back-to-gallery">← Назад в галерею</div>
                 <div class="product-container">
                     <div class="product-gallery">
-                        <img src="${product.image}" alt="${product.title}">
+                        <div class="product-image-main">
+                            <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
+                        </div>
+                        <div class="product-thumbnails">
+                            ${thumbnailsHTML}
+                        </div>
                     </div>
                     <div class="product-details">
                         <h1 class="product-title">${product.title}</h1>
@@ -750,6 +716,19 @@
             // Обработчик кнопки "Назад"
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
+            });
+            
+            // Обработчик миниатюр
+            const thumbnails = document.querySelectorAll('.product-thumbnail');
+            thumbnails.forEach(thumbnail => {
+                thumbnail.addEventListener('click', function() {
+                    // Убираем активный класс у всех миниатюр
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    // Добавляем активный класс к текущей миниатюре
+                    this.classList.add('active');
+                    // Меняем основное изображение
+                    document.getElementById('main-product-image').src = this.getAttribute('data-image');
+                });
             });
             
             // Обработчик кнопки "Добавить в корзину"

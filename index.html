@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Галерея искусств</title>
+    <style>
+        /* Общие стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cormorant Garamond', serif;
+        }
+        
+        body {
+            color: #000;
+            line-height: 1.6;
+            background-color: #fff;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Шапка */
+        header {
+            padding: 30px 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            background-color: rgba(255, 255, 255, 0.95);
+            transition: padding 0.3s ease;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 40px;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        nav ul li a:hover {
+            opacity: 0.7;
+        }
+        
+        /* Мобильное меню */
+        .mobile-menu {
+            display: none;
+            cursor: pointer;
+        }
+        
+        /* Главная страница */
+        .main-content {
+            margin-top: 120px;
+            padding: 0 60px;
+        }
+        
+        .hero-image {
+            width: 100%;
+            cursor: pointer;
+        }
+        
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* Галерея */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 60px;
+            padding: 0 60px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.03);
+        }
+        
+        .gallery-item-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .gallery-item:hover .gallery-item-overlay {
+            opacity: 1;
+        }
+        
+        .product-title {
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .product-price {
+            font-size: 14px;
+        }
+        
+        .sold-out {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        /* Страница товара */
+        .product-page {
+            display: none;
+            padding: 120px 60px 60px;
+        }
+        
+        .product-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .product-gallery {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .product-gallery img {
+            width: 100%;
+            height: auto;
+        }
+        
+        .product-details {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        .back-button {
+            display: inline-block;
+            margin-bottom: 30px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .back-button:hover {
+            opacity: 0.7;
+        }
+        
+        .add-to-cart {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            margin-top: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .add-to-cart:hover {
+            background: #333;
+        }
+        
+        /* Биография */
+        .bio-page {
+            display: none;
+            padding: 120px 60px 60px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .bio-page h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        
+        .bio-page p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+        
+        /* Контакты */
+        .contact-page {
+            display: none;
+            padding: 120px 60px 60px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .contact-page h1 {
+            margin-bottom: 30px;
+            font-size: 32px;
+        }
+        
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+        }
+        
+        .submit-button {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            align-self: flex-start;
+        }
+        
+        .submit-button:hover {
+            background: #333;
+        }
+        
+        /* Футер */
+        footer {
+            padding: 60px;
+            background: #f7f7f7;
+            margin-top: 60px;
+        }
+        
+        .newsletter {
+            text-align: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+        
+        .newsletter p {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        
+        .newsletter-form input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            width: 300px;
+            font-size: 16px;
+        }
+        
+        .newsletter-form button {
+            background: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .newsletter small {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .social-links a {
+            margin: 0 15px;
+            font-size: 14px;
+        }
+        
+        .social-links a:hover {
+            opacity: 0.7;
+        }
+        
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            header {
+                padding: 20px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: block;
+            }
+            
+            .mobile-nav {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: #fff;
+                z-index: 1001;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transform: translateY(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .mobile-nav.active {
+                transform: translateY(0);
+            }
+            
+            .mobile-nav ul {
+                list-style: none;
+                text-align: center;
+            }
+            
+            .mobile-nav ul li {
+                margin: 20px 0;
+                font-size: 20px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+            }
+            
+            .close-menu {
+                position: absolute;
+                top: 20px;
+                right: 20px;
+                font-size: 24px;
+                cursor: pointer;
+            }
+            
+            .main-content,
+            .gallery,
+            .product-page,
+            .bio-page,
+            .contact-page {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            
+            .product-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Шапка -->
+    <header>
+        <div class="logo">ГАЛЕРЕЯ ИСКУССТВ</div>
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+                <li><a href="#" class="nav-link" data-page="gallery">Галерея</a></li>
+                <li><a href="#" class="nav-link" data-page="bio">Об авторе</a></li>
+                <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
+            </ul>
+        </nav>
+        <div class="mobile-menu">Меню</div>
+    </header>
+
+    <!-- Мобильная навигация -->
+    <div class="mobile-nav">
+        <div class="close-menu">&times;</div>
+        <ul>
+            <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+            <li><a href="#" class="nav-link" data-page="gallery">Галерея</a></li>
+            <li><a href="#" class="nav-link" data-page="bio">Об авторе</a></li>
+            <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
+        </ul>
+    </div>
+
+    <!-- Главная страница -->
+    <div id="home-page" class="page">
+        <div class="main-content">
+            <div class="hero-image">
+                <img src="https://images.unsplash.com/photo-1579546929662-711aa81148cf?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Главное изображение" id="main-hero">
+            </div>
+        </div>
+    </div>
+
+    <!-- Галерея -->
+    <div id="gallery-page" class="page" style="display: none;">
+        <div class="gallery">
+            <!-- Элементы галереи будут добавлены через JavaScript -->
+        </div>
+    </div>
+
+    <!-- Страница товара -->
+    <div id="product-page" class="product-page">
+        <!-- Контент будет добавляться через JavaScript -->
+    </div>
+
+    <!-- Биография -->
+    <div id="bio-page" class="bio-page">
+        <h1>Об авторе</h1>
+        <p>Я - современный художник, вдохновленный красотой окружающего мира и внутренними переживаниями. Мои работы отражают взаимодействие цвета, формы и текстуры, создавая уникальные визуальные narratives.</p>
+        <p>Я работаю с различными медиа, включая акрил, масло и смешанную технику. Каждая картина - это исследование и выражение эмоций, зафиксированных на холсте.</p>
+        <p>Мое искусство - это диалог со зрителем, приглашение к размышлению и эмоциональному отклику. Я стремлюсь создавать работы, которые resonate с людьми на глубоком уровне.</p>
+        <p>Мои произведения находятся в частных коллекциях по всему миру и были представлены на нескольких выставках.</p>
+    </div>
+
+    <!-- Контакты -->
+    <div id="contact-page" class="contact-page">
+        <h1>Свяжитесь со мной</h1>
+        <form class="contact-form">
+            <div class="form-group">
+                <label for="name">Имя</label>
+                <input type="text" id="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+                <label for="message">Сообщение</label>
+                <textarea id="message" required></textarea>
+            </div>
+            <button type="submit" class="submit-button">Отправить</button>
+        </form>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <div class="newsletter">
+            <h2>Рассылка</h2>
+            <p>Подпишитесь на рассылку, чтобы получать новости о новых работах и событиях.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Ваш email" required>
+                <button type="submit">Подписаться</button>
+            </form>
+            <small>Мы уважаем вашу конфиденциальность.</small>
+        </div>
+        <div class="social-links">
+            <a href="mailto:info@example.com">Email</a>
+            <a href="https://www.instagram.com/" target="_blank">Instagram</a>
+        </div>
+    </footer>
+
+    <script>
+        // Данные для галереи
+        const galleryItems = [
+            {
+                id: 1,
+                title: "Без названия, №20",
+                size: "48\" x 36\"",
+                price: "3 450 ₽",
+                image: "https://images.unsplash.com/photo-1543857778-c4a1a569eafe?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: true,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            },
+            {
+                id: 2,
+                title: "Без названия, №21",
+                size: "36\" x 48\"",
+                price: "3 450 ₽",
+                image: "https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: false,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            },
+            {
+                id: 3,
+                title: "Без названия, №23",
+                size: "48\" x 36\"",
+                price: "3 450 ₽",
+                image: "https://images.unsplash.com/photo-1515405295579-ba7b45403062?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: false,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            },
+            {
+                id: 4,
+                title: "Без названия, №1",
+                size: "36\" x 48\"",
+                price: "3 450 ₽",
+                image: "https://images.unsplash.com/photo-1501084817091-a4f3d1d19e07?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: false,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            },
+            {
+                id: 5,
+                title: "Без названия, №16",
+                size: "30\" x 30\"",
+                price: "2 160 ₽",
+                image: "https://images.unsplash.com/photo-1499781350541-7783f6c6a0c8?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: false,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            },
+            {
+                id: 6,
+                title: "Без названия, №5",
+                size: "36\" x 48\"",
+                price: "3 450 ₽",
+                image: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80",
+                soldOut: false,
+                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+            }
+        ];
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация галереи
+            initGallery();
+            
+            // Навигация
+            initNavigation();
+            
+            // Обработчики форм
+            initForms();
+            
+            // Клик по главному изображению
+            document.getElementById('main-hero').addEventListener('click', function() {
+                showPage('gallery');
+            });
+        });
+
+        // Инициализация галереи
+        function initGallery() {
+            const galleryContainer = document.querySelector('.gallery');
+            
+            galleryItems.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}">
+                    <div class="gallery-item-overlay">
+                        <div class="product-title">${item.title}</div>
+                        <div class="product-price">${item.price}</div>
+                    </div>
+                    ${item.soldOut ? '<div class="sold-out">Продано</div>' : ''}
+                `;
+                
+                galleryItem.addEventListener('click', function() {
+                    showProduct(item);
+                });
+                
+                galleryContainer.appendChild(galleryItem);
+            });
+        }
+
+        // Инициализация навигации
+        function initNavigation() {
+            // Навигационные ссылки
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    showPage(page);
+                });
+            });
+            
+            // Мобильное меню
+            const mobileMenu = document.querySelector('.mobile-menu');
+            const mobileNav = document.querySelector('.mobile-nav');
+            const closeMenu = document.querySelector('.close-menu');
+            
+            mobileMenu.addEventListener('click', function() {
+                mobileNav.classList.add('active');
+            });
+            
+            closeMenu.addEventListener('click', function() {
+                mobileNav.classList.remove('active');
+            });
+            
+            // Закрытие мобильного меню при клике на ссылку
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    mobileNav.classList.remove('active');
+                });
+            });
+        }
+
+        // Инициализация форм
+        function initForms() {
+            // Форма контактов
+            const contactForm = document.querySelector('.contact-form');
+            contactForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Сообщение отправлено! Я свяжусь с вами в ближайшее время.');
+                contactForm.reset();
+            });
+            
+            // Форма подписки
+            const newsletterForm = document.querySelector('.newsletter-form');
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                alert('Спасибо за подписку!');
+                newsletterForm.reset();
+            });
+        }
+
+        // Показать страницу
+        function showPage(pageId) {
+            // Скрыть все страницы
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.style.display = 'none';
+            });
+            
+            // Показать выбранную страницу
+            document.getElementById(`${pageId}-page`).style.display = 'block';
+            
+            // Прокрутка к верху страницы
+            window.scrollTo(0, 0);
+        }
+
+        // Показать страницу товара
+        function showProduct(product) {
+            const productPage = document.getElementById('product-page');
+            productPage.innerHTML = `
+                <div class="back-button" id="back-to-gallery">← Назад в галерею</div>
+                <div class="product-container">
+                    <div class="product-gallery">
+                        <img src="${product.image}" alt="${product.title}">
+                    </div>
+                    <div class="product-details">
+                        <h1 class="product-title">${product.title}</h1>
+                        <div class="product-price">${product.price}</div>
+                        <div class="product-size">${product.size}</div>
+                        <div class="product-description">
+                            <p>${product.description}</p>
+                            <p>Картина поставляется без рамы.</p>
+                        </div>
+                        ${product.soldOut ? 
+                            '<div class="sold-out">Продано</div>' : 
+                            '<button class="add-to-cart">Добавить в корзину</button>'
+                        }
+                    </div>
+                </div>
+            `;
+            
+            // Обработчик кнопки "Назад"
+            document.getElementById('back-to-gallery').addEventListener('click', function() {
+                showPage('gallery');
+            });
+            
+            // Обработчик кнопки "Добавить в корзину"
+            const addToCartBtn = document.querySelector('.add-to-cart');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    alert('Товар добавлен в корзину!');
+                });
+            }
+            
+            // Показать страницу товара
+            showPage('product');
+        }
+    </script>
+</body>
+</html>

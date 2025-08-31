@@ -551,7 +551,7 @@
             const images = Array.from({length: photosPerPainting}, (_, j) => {
                 const photoNumber = j + 1;
                 const globalImageNumber = (paintingNumber - 1) * photosPerPainting + photoNumber;
-                return `images/gallery/${paintingNumber}/${globalImageNumber}.jpg`;
+                return `images/gallery/${paintingNumber}/${globalImageNumber}.JPG`;
             });
             
             return {

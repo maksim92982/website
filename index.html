@@ -234,13 +234,13 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: center;
-            max-height: 80vh;
+            align-items: flex-start; /* Изменено с center на flex-start */
+            max-height: 65vh; /* Уменьшено с 80vh на 65vh (примерно на 19%) */
         }
         
         .product-image-main img {
             max-width: 100%;
-            max-height: 80vh;
+            max-height: 65vh; /* Уменьшено с 80vh на 65vh */
             width: auto;
             height: auto;
             object-fit: contain;
@@ -450,10 +450,11 @@
             
             .product-image-main {
                 order: 1;
+                max-height: 55vh; /* Уменьшено для мобильных устройств */
             }
             
             .product-image-main img {
-                max-height: 70vh;
+                max-height: 55vh; /* Уменьшено для мобильных устройств */
             }
             
             .product-details {
@@ -481,8 +482,12 @@
                 height: 30vh;
             }
             
+            .product-image-main {
+                max-height: 50vh; /* Уменьшено для маленьких экранов */
+            }
+            
             .product-image-main img {
-                max-height: 60vh;
+                max-height: 50vh; /* Уменьшено для маленьких экранов */
             }
             
             .product-thumbnail {
@@ -764,7 +769,7 @@
                     mainImage.src = this.getAttribute('data-image');
                     
                     mainImage.style.maxWidth = '100%';
-                    mainImage.style.maxHeight = '80vh';
+                    mainImage.style.maxHeight = '65vh';
                     mainImage.style.width = 'auto';
                     mainImage.style.height = 'auto';
                     mainImage.style.objectFit = 'contain';

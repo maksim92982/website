@@ -67,6 +67,34 @@
             cursor: pointer;
         }
         
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateY(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-nav.active {
+            transform: translateY(0);
+        }
+        
+        .close-menu {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
         /* Главная страница */
         .main-content {
             margin-top: 120px;
@@ -75,23 +103,23 @@
         
         .hero-image {
             width: 100%;
-            height: 70vh; /* Уменьшили высоту на 30% (было 100vh) */
+            height: 70vh;
             cursor: pointer;
-            overflow: hidden; /* Обрезаем все, что выходит за границы */
+            overflow: hidden;
             position: relative;
         }
         
         .hero-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Заполняем контейнер, обрезая изображение */
+            object-fit: cover;
             display: block;
         }
         
         /* Галерея */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* Всегда 3 в ряд */
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
             margin-top: 120px;
             padding: 0 60px;
@@ -101,14 +129,14 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
-            height: 50vh; /* Высота 50% от высоты экрана */
+            height: 50vh;
             width: 100%;
         }
         
         .gallery-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Заполняем контейнер, обрезая изображение */
+            object-fit: cover;
             transition: transform 0.3s ease;
         }
         
@@ -167,7 +195,7 @@
         .product-gallery {
             flex: 1;
             min-width: 300px;
-            max-width: 75%; /* Максимум 75% ширины экрана */
+            max-width: 75%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -179,15 +207,15 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            max-height: 80vh; /* Максимум 80% высоты экрана */
+            max-height: 80vh;
         }
         
         .product-image-main img {
             max-width: 100%;
-            max-height: 80vh; /* Максимум 80% высоты экрана */
+            max-height: 80vh;
             width: auto;
             height: auto;
-            object-fit: contain; /* Сохраняем пропорции */
+            object-fit: contain;
         }
         
         /* Плавающая панель миниатюр */
@@ -200,6 +228,7 @@
             z-index: 999;
             transition: transform 0.3s ease;
             box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            display: none;
         }
         
         .thumbnails-container {
@@ -229,7 +258,7 @@
         .product-thumbnail img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Все миниатюры одинакового размера */
+            object-fit: cover;
         }
         
         .product-details {
@@ -368,15 +397,15 @@
         /* Адаптивность */
         @media (max-width: 1024px) {
             .gallery {
-                grid-template-columns: repeat(2, 1fr); /* 2 в ряд на планшетах */
+                grid-template-columns: repeat(2, 1fr);
             }
             
             .gallery-item {
-                height: 40vh; /* Немного меньше высота на планшетах */
+                height: 40vh;
             }
             
             .product-gallery {
-                max-width: 85%; /* Чуть больше на планшетах */
+                max-width: 85%;
             }
             
             .thumbnails-container {
@@ -397,46 +426,6 @@
                 display: block;
             }
             
-            .mobile-nav {
-                position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: #fff;
-                z-index: 1001;
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                transform: translateY(-100%);
-                transition: transform 0.3s ease;
-            }
-            
-            .mobile-nav.active {
-                transform: translateY(0);
-            }
-            
-            .mobile-nav ul {
-                list-style: none;
-                text-align: center;
-            }
-            
-            .mobile-nav ul li {
-                margin: 20px 0;
-                font-size: 20px;
-                text-transform: uppercase;
-                letter-spacing: 1px;
-            }
-            
-            .close-menu {
-                position: absolute;
-                top: 20px;
-                right: 20px;
-                font-size: 24px;
-                cursor: pointer;
-            }
-            
             .main-content,
             .gallery,
             .product-page,
@@ -447,16 +436,16 @@
             }
             
             .hero-image {
-                height: 50vh; /* Меньшая высота для мобильных устройств */
+                height: 50vh;
             }
             
             .gallery {
-                grid-template-columns: 1fr; /* 1 в ряд на мобильных */
+                grid-template-columns: 1fr;
                 gap: 15px;
             }
             
             .gallery-item {
-                height: 35vh; /* Меньшая высота для мобильных */
+                height: 35vh;
             }
             
             .product-container {
@@ -465,12 +454,12 @@
             }
             
             .product-gallery {
-                max-width: 100%; /* На всю ширину на мобильных */
+                max-width: 100%;
                 min-width: unset;
             }
             
             .product-image-main img {
-                max-height: 70vh; /* Чуть меньше на мобильных */
+                max-height: 70vh;
             }
             
             .product-details {
@@ -500,11 +489,11 @@
         
         @media (max-width: 480px) {
             .gallery-item {
-                height: 30vh; /* Еще меньше высота на маленьких экранах */
+                height: 30vh;
             }
             
             .product-image-main img {
-                max-height: 60vh; /* Еще меньше на маленьких экранах */
+                max-height: 60vh;
             }
             
             .product-thumbnail {
@@ -534,6 +523,17 @@
         </nav>
         <div class="mobile-menu">Меню</div>
     </header>
+
+    <!-- Мобильное меню (добавлено в HTML) -->
+    <div class="mobile-nav">
+        <div class="close-menu">✕</div>
+        <ul>
+            <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
+            <li><a href="#" class="nav-link" data-page="gallery">Галерея</a></li>
+            <li><a href="#" class="nav-link" data-page="bio">Об авторе</a></li>
+            <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
+        </ul>
+    </div>
 
     <!-- Главная страница -->
     <div id="home-page" class="page">
@@ -594,7 +594,7 @@
     </footer>
 
     <!-- Плавающая панель миниатюр -->
-    <div class="thumbnails-panel" id="thumbnailsPanel" style="display: none;">
+    <div class="thumbnails-panel" id="thumbnailsPanel">
         <div class="thumbnails-container" id="thumbnailsContainer">
             <!-- Миниатюры будут добавляться через JavaScript -->
         </div>
@@ -602,7 +602,7 @@
 
     <script>
         // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее. количество фоток
-        const numberOfPaintings = 3; // Измените это число на количество ваших картин
+        const numberOfPaintings = 3;
         
         // Количество фотографий для каждой картины
         const photosPerPainting = 6;
@@ -617,11 +617,9 @@
         const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
             const paintingNumber = i + 1;
             
-            // Создаем массив изображений для каждой картины
             const images = Array.from({length: photosPerPainting}, (_, j) => {
                 const photoNumber = j + 1;
-                const globalImageNumber = (paintingNumber - 1) * photosPerPainting + photoNumber;
-                return `images/gallery/${paintingNumber}/${globalImageNumber}.JPG`;
+                return `images/gallery/${paintingNumber}/${photoNumber}.JPG`;
             });
             
             return {
@@ -629,30 +627,23 @@
                 title: `Без названия, №${paintingNumber}`,
                 size: paintingNumber % 2 === 0 ? '36" x 48"' : '48" x 36"',
                 price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
-                mainImage: images[0], // Первое изображение как основное
-                images: images, // Все изображения для галереи товара
-                soldOut: paintingNumber === 1, // Первая картина помечается как проданная
+                mainImage: images[0],
+                images: images,
+                soldOut: paintingNumber === 1,
                 description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
             };
         });
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {
-            // Инициализация галереи
             initGallery();
-            
-            // Навигация
             initNavigation();
-            
-            // Обработчики форм
             initForms();
             
-            // Клик по главному изображению
             document.getElementById('main-hero').addEventListener('click', function() {
                 showPage('gallery');
             });
             
-            // Обработчик скролла
             window.addEventListener('scroll', handleScroll);
         });
 
@@ -662,13 +653,8 @@
             if (!panel || panel.style.display === 'none') return;
             
             const scrollY = window.scrollY;
-            const panelElement = document.getElementById('thumbnailsPanel');
-            
-            // Вычисляем новую позицию панели
             let newPosition = Math.min(Math.max(scrollY, imageBottomPosition - maxScroll), imageBottomPosition);
-            
-            // Применяем преобразование
-            panelElement.style.transform = `translateY(${newPosition}px)`;
+            panel.style.transform = `translateY(${newPosition}px)`;
         }
 
         // Инициализация галереи
@@ -697,7 +683,6 @@
 
         // Инициализация навигации
         function initNavigation() {
-            // Навигационные ссылки
             const navLinks = document.querySelectorAll('.nav-link');
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
@@ -705,7 +690,6 @@
                     const page = this.getAttribute('data-page');
                     showPage(page);
                     
-                    // Скрываем панель миниатюр при переходе на другие страницы
                     const panel = document.getElementById('thumbnailsPanel');
                     if (panel) {
                         panel.style.display = 'none';
@@ -718,46 +702,44 @@
             const mobileNav = document.querySelector('.mobile-nav');
             const closeMenu = document.querySelector('.close-menu');
             
-            mobileMenu.addEventListener('click', function() {
-                mobileNav.classList.add('active');
-            });
-            
-            closeMenu.addEventListener('click', function() {
-                mobileNav.classList.remove('active');
-            });
-            
-            // Закрытие мобильного меню при клике на ссылку
-            const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
-            mobileNavLinks.forEach(link => {
-                link.addEventListener('click', function() {
+            if (mobileMenu && mobileNav && closeMenu) {
+                mobileMenu.addEventListener('click', function() {
+                    mobileNav.classList.add('active');
+                });
+                
+                closeMenu.addEventListener('click', function() {
                     mobileNav.classList.remove('active');
                 });
-            });
+                
+                const mobileNavLinks = document.querySelectorAll('.mobile-nav .nav-link');
+                mobileNavLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileNav.classList.remove('active');
+                    });
+                });
+            }
         }
 
         // Инициализация форм
         function initForms() {
-            // Форма контактов
             const contactForm = document.querySelector('.contact-form');
-            contactForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Сообщение отправлено! Я свяжусь с вами в ближайшее время.');
-                contactForm.reset();
-            });
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    alert('Сообщение отправлено! Я свяжусь с вами в ближайшее время.');
+                    contactForm.reset();
+                });
+            }
         }
 
         // Показать страницу
         function showPage(pageId) {
-            // Скрыть все страницы
             const pages = document.querySelectorAll('.page');
             pages.forEach(page => {
                 page.style.display = 'none';
             });
             
-            // Показать выбранную страницу
             document.getElementById(`${pageId}-page`).style.display = 'block';
-            
-            // Прокрутка к верху страницы
             window.scrollTo(0, 0);
         }
 
@@ -765,13 +747,6 @@
         function showProduct(product) {
             currentProduct = product;
             const productPage = document.getElementById('product-page');
-            
-            // Создаем HTML для миниатюр
-            const thumbnailsHTML = product.images.map((image, index) => `
-                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
-                    <img src="${image}" alt="Миниатюра ${index + 1}">
-                </div>
-            `).join('');
             
             productPage.innerHTML = `
                 <div class="back-button" id="back-to-gallery">← Назад в галерею</div>
@@ -797,10 +772,8 @@
                 </div>
             `;
             
-            // Инициализируем панель миниатюр
             initThumbnailsPanel(product);
             
-            // Обработчик кнопки "Назад"
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
                 const panel = document.getElementById('thumbnailsPanel');
@@ -809,7 +782,6 @@
                 }
             });
             
-            // Обработчик кнопки "Добавить в корзину"
             const addToCartBtn = document.querySelector('.add-to-cart');
             if (addToCartBtn) {
                 addToCartBtn.addEventListener('click', function() {
@@ -817,10 +789,7 @@
                 });
             }
             
-            // Показать страницу товара
             showPage('product');
-            
-            // Вычисляем позиции после отрисовки страницы
             setTimeout(calculatePositions, 100);
         }
 
@@ -829,7 +798,6 @@
             const panel = document.getElementById('thumbnailsPanel');
             const container = document.getElementById('thumbnailsContainer');
             
-            // Создаем миниатюры для панели
             const thumbnailsHTML = product.images.map((image, index) => `
                 <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
                     <img src="${image}" alt="Миниатюра ${index + 1}">
@@ -838,19 +806,14 @@
             
             container.innerHTML = thumbnailsHTML;
             
-            // Обработчики для миниатюр в панели
             const thumbnails = container.querySelectorAll('.product-thumbnail');
             thumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', function() {
-                    // Убираем активный класс у всех миниатюр
                     thumbnails.forEach(t => t.classList.remove('active'));
-                    // Добавляем активный класс к текущей миниатюре
                     this.classList.add('active');
-                    // Меняем основное изображение
                     const mainImage = document.getElementById('main-product-image');
                     mainImage.src = this.getAttribute('data-image');
                     
-                    // Сохраняем пропорции и максимальные размеры
                     mainImage.style.maxWidth = '100%';
                     mainImage.style.maxHeight = '80vh';
                     mainImage.style.width = 'auto';
@@ -859,7 +822,6 @@
                 });
             });
             
-            // Показываем панель
             panel.style.display = 'block';
         }
 
@@ -870,20 +832,14 @@
             
             if (!imageElement || !panel) return;
             
-            // Получаем позицию нижнего края изображения
             const imageRect = imageElement.getBoundingClientRect();
             imageBottomPosition = imageRect.bottom + window.scrollY;
             
-            // Получаем высоту панели
             panelHeight = panel.offsetHeight;
-            
-            // Максимальный скролл - высота панели
             maxScroll = panelHeight;
             
-            // Устанавливаем начальную позицию панели
             panel.style.transform = `translateY(${imageBottomPosition}px)`;
             
-            // Обновляем позицию при ресайзе
             window.addEventListener('resize', calculatePositions);
         }
     </script>

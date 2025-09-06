@@ -197,47 +197,16 @@
             min-width: 300px;
             max-width: 75%;
             display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .product-thumbnails {
+            display: flex;
             flex-direction: column;
-            align-items: center;
-        }
-        
-        .product-image-main {
-            width: 100%;
-            margin-bottom: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            max-height: 80vh;
-        }
-        
-        .product-image-main img {
-            max-width: 100%;
-            max-height: 80vh;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-        }
-        
-        /* Плавающая панель миниатюр */
-        .thumbnails-panel {
-            position: fixed;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            padding: 15px 0;
-            z-index: 999;
-            transition: transform 0.3s ease;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-            display: none;
-        }
-        
-        .thumbnails-container {
-            display: flex;
-            justify-content: center;
             gap: 10px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
+            width: 80px;
         }
         
         .product-thumbnail {
@@ -259,6 +228,22 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+        }
+        
+        .product-image-main {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-height: 80vh;
+        }
+        
+        .product-image-main img {
+            max-width: 100%;
+            max-height: 80vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
         }
         
         .product-details {
@@ -407,10 +392,6 @@
             .product-gallery {
                 max-width: 85%;
             }
-            
-            .thumbnails-container {
-                padding: 0 15px;
-            }
         }
         
         @media (max-width: 768px) {
@@ -454,8 +435,21 @@
             }
             
             .product-gallery {
+                flex-direction: column;
                 max-width: 100%;
                 min-width: unset;
+            }
+            
+            .product-thumbnails {
+                flex-direction: row;
+                flex-wrap: wrap;
+                width: 100%;
+                justify-content: center;
+                order: 2;
+            }
+            
+            .product-image-main {
+                order: 1;
             }
             
             .product-image-main img {
@@ -469,11 +463,6 @@
             .product-thumbnail {
                 width: 60px;
                 height: 60px;
-            }
-            
-            .thumbnails-container {
-                gap: 8px;
-                padding: 0 10px;
             }
             
             .social-links {
@@ -499,10 +488,6 @@
             .product-thumbnail {
                 width: 50px;
                 height: 50px;
-            }
-            
-            .thumbnails-container {
-                gap: 5px;
             }
         }
     </style>
@@ -593,13 +578,6 @@
         </div>
     </footer>
 
-    <!-- Плавающая панель миниатюр -->
-    <div class="thumbnails-panel" id="thumbnailsPanel">
-        <div class="thumbnails-container" id="thumbnailsContainer">
-            <!-- Миниатюры будут добавляться через JavaScript -->
-        </div>
-    </div>
-
     <script>
         // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее. количество фоток
         const numberOfPaintings = 3;
@@ -609,9 +587,6 @@
         
         // Переменные для управления панелью миниатюр
         let currentProduct = null;
-        let imageBottomPosition = 0;
-        let panelHeight = 0;
-        let maxScroll = 0;
         
         // Автоматическое создание данных для галереи
         const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
@@ -643,19 +618,7 @@
             document.getElementById('main-hero').addEventListener('click', function() {
                 showPage('gallery');
             });
-            
-            window.addEventListener('scroll', handleScroll);
         });
-
-        // Обработчик скролла для панели миниатюр
-        function handleScroll() {
-            const panel = document.getElementById('thumbnailsPanel');
-            if (!panel || panel.style.display === 'none') return;
-            
-            const scrollY = window.scrollY;
-            let newPosition = Math.min(Math.max(scrollY, imageBottomPosition - maxScroll), imageBottomPosition);
-            panel.style.transform = `translateY(${newPosition}px)`;
-        }
 
         // Инициализация галереи
         function initGallery() {
@@ -689,11 +652,6 @@
                     e.preventDefault();
                     const page = this.getAttribute('data-page');
                     showPage(page);
-                    
-                    const panel = document.getElementById('thumbnailsPanel');
-                    if (panel) {
-                        panel.style.display = 'none';
-                    }
                 });
             });
             
@@ -752,6 +710,13 @@
                 <div class="back-button" id="back-to-gallery">← Назад в галерею</div>
                 <div class="product-container">
                     <div class="product-gallery">
+                        <div class="product-thumbnails" id="thumbnailsContainer">
+                            ${product.images.map((image, index) => `
+                                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
+                                    <img src="${image}" alt="Миниатюра ${index + 1}">
+                                </div>
+                            `).join('')}
+                        </div>
                         <div class="product-image-main">
                             <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
                         </div>
@@ -772,14 +737,10 @@
                 </div>
             `;
             
-            initThumbnailsPanel(product);
+            initThumbnails(product);
             
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
-                const panel = document.getElementById('thumbnailsPanel');
-                if (panel) {
-                    panel.style.display = 'none';
-                }
             });
             
             const addToCartBtn = document.querySelector('.add-to-cart');
@@ -790,23 +751,11 @@
             }
             
             showPage('product');
-            setTimeout(calculatePositions, 100);
         }
 
-        // Инициализация панели миниатюр
-        function initThumbnailsPanel(product) {
-            const panel = document.getElementById('thumbnailsPanel');
-            const container = document.getElementById('thumbnailsContainer');
-            
-            const thumbnailsHTML = product.images.map((image, index) => `
-                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
-                    <img src="${image}" alt="Миниатюра ${index + 1}">
-                </div>
-            `).join('');
-            
-            container.innerHTML = thumbnailsHTML;
-            
-            const thumbnails = container.querySelectorAll('.product-thumbnail');
+        // Инициализация миниатюр
+        function initThumbnails(product) {
+            const thumbnails = document.querySelectorAll('.product-thumbnail');
             thumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', function() {
                     thumbnails.forEach(t => t.classList.remove('active'));
@@ -821,26 +770,6 @@
                     mainImage.style.objectFit = 'contain';
                 });
             });
-            
-            panel.style.display = 'block';
-        }
-
-        // Вычисление позиций для панели миниатюр
-        function calculatePositions() {
-            const imageElement = document.getElementById('main-product-image');
-            const panel = document.getElementById('thumbnailsPanel');
-            
-            if (!imageElement || !panel) return;
-            
-            const imageRect = imageElement.getBoundingClientRect();
-            imageBottomPosition = imageRect.bottom + window.scrollY;
-            
-            panelHeight = panel.offsetHeight;
-            maxScroll = panelHeight;
-            
-            panel.style.transform = `translateY(${imageBottomPosition}px)`;
-            
-            window.addEventListener('resize', calculatePositions);
         }
     </script>
 </body>

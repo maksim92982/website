@@ -91,7 +91,7 @@
         /* Галерея */
         .gallery {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(3, 1fr); /* Всегда 3 в ряд */
             gap: 20px;
             margin-top: 120px;
             padding: 0 60px;
@@ -101,11 +101,14 @@
             position: relative;
             overflow: hidden;
             cursor: pointer;
+            height: 50vh; /* Высота 50% от высоты экрана */
+            width: 100%;
         }
         
         .gallery-item img {
             width: 100%;
-            height: auto;
+            height: 100%;
+            object-fit: cover; /* Заполняем контейнер, обрезая изображение */
             transition: transform 0.3s ease;
         }
         
@@ -318,12 +321,13 @@
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            gap: 20px;
+            gap: 30px;
         }
         
         .social-links a {
-            font-size: 16px;
-            padding: 10px 15px;
+            font-size: 18px;
+            padding: 12px 20px;
+            transition: opacity 0.3s ease;
         }
         
         .social-links a:hover {
@@ -331,6 +335,16 @@
         }
         
         /* Адаптивность */
+        @media (max-width: 1024px) {
+            .gallery {
+                grid-template-columns: repeat(2, 1fr); /* 2 в ряд на планшетах */
+            }
+            
+            .gallery-item {
+                height: 40vh; /* Немного меньше высота на планшетах */
+            }
+        }
+        
         @media (max-width: 768px) {
             header {
                 padding: 20px;
@@ -397,6 +411,15 @@
                 height: 50vh; /* Меньшая высота для мобильных устройств */
             }
             
+            .gallery {
+                grid-template-columns: 1fr; /* 1 в ряд на мобильных */
+                gap: 15px;
+            }
+            
+            .gallery-item {
+                height: 35vh; /* Меньшая высота для мобильных */
+            }
+            
             .product-container {
                 flex-direction: column;
             }
@@ -408,7 +431,18 @@
             
             .social-links {
                 flex-direction: column;
-                gap: 15px;
+                gap: 20px;
+            }
+            
+            .social-links a {
+                font-size: 16px;
+                padding: 10px 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .gallery-item {
+                height: 30vh; /* Еще меньше высота на маленьких экранах */
             }
         }
     </style>
@@ -483,8 +517,6 @@
     <!-- Футер -->
     <footer>
         <div class="social-links">
-            <span>Email</span>
-            <span>Телефон</span>
             <a href="https://wa.me/79046006365" target="_blank">WhatsApp</a>
             <a href="https://www.instagram.com/" target="_blank">Instagram</a>
         </div>

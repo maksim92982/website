@@ -190,11 +190,25 @@
             object-fit: contain; /* Сохраняем пропорции */
         }
         
-        .product-thumbnails {
+        /* Плавающая панель миниатюр */
+        .thumbnails-panel {
+            position: fixed;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 15px 0;
+            z-index: 999;
+            transition: transform 0.3s ease;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .thumbnails-container {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
             justify-content: center;
+            gap: 10px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
         
         .product-thumbnail {
@@ -364,6 +378,10 @@
             .product-gallery {
                 max-width: 85%; /* Чуть больше на планшетах */
             }
+            
+            .thumbnails-container {
+                padding: 0 15px;
+            }
         }
         
         @media (max-width: 768px) {
@@ -459,18 +477,14 @@
                 max-width: 100%;
             }
             
-            .product-thumbnails {
-                gap: 8px;
-            }
-            
             .product-thumbnail {
                 width: 60px;
                 height: 60px;
             }
             
-            .product-thumbnails {
-                flex-wrap: wrap;
-                justify-content: center;
+            .thumbnails-container {
+                gap: 8px;
+                padding: 0 10px;
             }
             
             .social-links {
@@ -496,6 +510,10 @@
             .product-thumbnail {
                 width: 50px;
                 height: 50px;
+            }
+            
+            .thumbnails-container {
+                gap: 5px;
             }
         }
     </style>
@@ -575,12 +593,25 @@
         </div>
     </footer>
 
+    <!-- Плавающая панель миниатюр -->
+    <div class="thumbnails-panel" id="thumbnailsPanel" style="display: none;">
+        <div class="thumbnails-container" id="thumbnailsContainer">
+            <!-- Миниатюры будут добавляться через JavaScript -->
+        </div>
+    </div>
+
     <script>
         // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее. количество фоток
         const numberOfPaintings = 3; // Измените это число на количество ваших картин
         
         // Количество фотографий для каждой картины
         const photosPerPainting = 6;
+        
+        // Переменные для управления панелью миниатюр
+        let currentProduct = null;
+        let imageBottomPosition = 0;
+        let panelHeight = 0;
+        let maxScroll = 0;
         
         // Автоматическое создание данных для галереи
         const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
@@ -620,7 +651,25 @@
             document.getElementById('main-hero').addEventListener('click', function() {
                 showPage('gallery');
             });
+            
+            // Обработчик скролла
+            window.addEventListener('scroll', handleScroll);
         });
+
+        // Обработчик скролла для панели миниатюр
+        function handleScroll() {
+            const panel = document.getElementById('thumbnailsPanel');
+            if (!panel || panel.style.display === 'none') return;
+            
+            const scrollY = window.scrollY;
+            const panelElement = document.getElementById('thumbnailsPanel');
+            
+            // Вычисляем новую позицию панели
+            let newPosition = Math.min(Math.max(scrollY, imageBottomPosition - maxScroll), imageBottomPosition);
+            
+            // Применяем преобразование
+            panelElement.style.transform = `translateY(${newPosition}px)`;
+        }
 
         // Инициализация галереи
         function initGallery() {
@@ -655,6 +704,12 @@
                     e.preventDefault();
                     const page = this.getAttribute('data-page');
                     showPage(page);
+                    
+                    // Скрываем панель миниатюр при переходе на другие страницы
+                    const panel = document.getElementById('thumbnailsPanel');
+                    if (panel) {
+                        panel.style.display = 'none';
+                    }
                 });
             });
             
@@ -708,6 +763,7 @@
 
         // Показать страницу товара
         function showProduct(product) {
+            currentProduct = product;
             const productPage = document.getElementById('product-page');
             
             // Создаем HTML для миниатюр
@@ -723,9 +779,6 @@
                     <div class="product-gallery">
                         <div class="product-image-main">
                             <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
-                        </div>
-                        <div class="product-thumbnails">
-                            ${thumbnailsHTML}
                         </div>
                     </div>
                     <div class="product-details">
@@ -744,13 +797,49 @@
                 </div>
             `;
             
+            // Инициализируем панель миниатюр
+            initThumbnailsPanel(product);
+            
             // Обработчик кнопки "Назад"
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
+                const panel = document.getElementById('thumbnailsPanel');
+                if (panel) {
+                    panel.style.display = 'none';
+                }
             });
             
-            // Обработчик миниатюр
-            const thumbnails = document.querySelectorAll('.product-thumbnail');
+            // Обработчик кнопки "Добавить в корзину"
+            const addToCartBtn = document.querySelector('.add-to-cart');
+            if (addToCartBtn) {
+                addToCartBtn.addEventListener('click', function() {
+                    alert('Товар добавлен в корзину!');
+                });
+            }
+            
+            // Показать страницу товара
+            showPage('product');
+            
+            // Вычисляем позиции после отрисовки страницы
+            setTimeout(calculatePositions, 100);
+        }
+
+        // Инициализация панели миниатюр
+        function initThumbnailsPanel(product) {
+            const panel = document.getElementById('thumbnailsPanel');
+            const container = document.getElementById('thumbnailsContainer');
+            
+            // Создаем миниатюры для панели
+            const thumbnailsHTML = product.images.map((image, index) => `
+                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
+                    <img src="${image}" alt="Миниатюра ${index + 1}">
+                </div>
+            `).join('');
+            
+            container.innerHTML = thumbnailsHTML;
+            
+            // Обработчики для миниатюр в панели
+            const thumbnails = container.querySelectorAll('.product-thumbnail');
             thumbnails.forEach(thumbnail => {
                 thumbnail.addEventListener('click', function() {
                     // Убираем активный класс у всех миниатюр
@@ -770,16 +859,32 @@
                 });
             });
             
-            // Обработчик кнопки "Добавить в корзину"
-            const addToCartBtn = document.querySelector('.add-to-cart');
-            if (addToCartBtn) {
-                addToCartBtn.addEventListener('click', function() {
-                    alert('Товар добавлен в корзину!');
-                });
-            }
+            // Показываем панель
+            panel.style.display = 'block';
+        }
+
+        // Вычисление позиций для панели миниатюр
+        function calculatePositions() {
+            const imageElement = document.getElementById('main-product-image');
+            const panel = document.getElementById('thumbnailsPanel');
             
-            // Показать страницу товара
-            showPage('product');
+            if (!imageElement || !panel) return;
+            
+            // Получаем позицию нижнего края изображения
+            const imageRect = imageElement.getBoundingClientRect();
+            imageBottomPosition = imageRect.bottom + window.scrollY;
+            
+            // Получаем высоту панели
+            panelHeight = panel.offsetHeight;
+            
+            // Максимальный скролл - высота панели
+            maxScroll = panelHeight;
+            
+            // Устанавливаем начальную позицию панели
+            panel.style.transform = `translateY(${imageBottomPosition}px)`;
+            
+            // Обновляем позицию при ресайзе
+            window.addEventListener('resize', calculatePositions);
         }
     </script>
 </body>

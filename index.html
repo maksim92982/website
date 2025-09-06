@@ -311,60 +311,19 @@
             padding: 60px;
             background: #f7f7f7;
             margin-top: 60px;
-        }
-        
-        .newsletter {
             text-align: center;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        
-        .newsletter h2 {
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-        
-        .newsletter p {
-            margin-bottom: 20px;
-            font-size: 16px;
-        }
-        
-        .newsletter-form {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
-        }
-        
-        .newsletter-form input {
-            padding: 10px;
-            border: 1px solid #ddd;
-            width: 300px;
-            font-size: 16px;
-        }
-        
-        .newsletter-form button {
-            background: #000;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        
-        .newsletter small {
-            font-size: 12px;
-            color: #666;
         }
         
         .social-links {
             display: flex;
             justify-content: center;
-            margin-top: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
         
         .social-links a {
-            margin: 0 15px;
-            font-size: 14px;
+            font-size: 16px;
+            padding: 10px 15px;
         }
         
         .social-links a:hover {
@@ -446,6 +405,11 @@
                 flex-wrap: wrap;
                 justify-content: center;
             }
+            
+            .social-links {
+                flex-direction: column;
+                gap: 15px;
+            }
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,700&display=swap" rel="stylesheet">
@@ -518,17 +482,10 @@
 
     <!-- Футер -->
     <footer>
-        <div class="newsletter">
-            <h2>Рассылка</h2>
-            <p>Подпишитесь на рассылку, чтобы получать новости о новых работах и событиях.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Ваш email" required>
-                <button type="submit">Подписаться</button>
-            </form>
-            <small>Мы уважаем вашу конфиденциальность.</small>
-        </div>
         <div class="social-links">
-            <a href="mailto:info@example.com">Email</a>
+            <a href="mailto:ta88spb@gmail.com">Email: ta88spb@gmail.com</a>
+            <a href="tel:+79046068107">Телефон: +7 (904) 606-81-07</a>
+            <a href="https://wa.me/79046068107" target="_blank">WhatsApp</a>
             <a href="https://www.instagram.com/" target="_blank">Instagram</a>
         </div>
     </footer>
@@ -646,14 +603,6 @@
                 e.preventDefault();
                 alert('Сообщение отправлено! Я свяжусь с вами в ближайшее время.');
                 contactForm.reset();
-            });
-            
-            // Форма подписки
-            const newsletterForm = document.querySelector('.newsletter-form');
-            newsletterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                alert('Спасибо за подписку!');
-                newsletterForm.reset();
             });
         }
 

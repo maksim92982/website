@@ -43,6 +43,11 @@
             font-weight: 700;
             letter-spacing: 2px;
             font-family: 'Italiana', serif;
+            cursor: pointer;
+        }
+        
+        .logo:hover {
+            opacity: 0.7;
         }
         
         nav ul {
@@ -234,13 +239,13 @@
             flex: 1;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* Изменено с center на flex-start */
-            max-height: 65vh; /* Уменьшено с 80vh на 65vh (примерно на 19%) */
+            align-items: flex-start;
+            max-height: 65vh;
         }
         
         .product-image-main img {
             max-width: 100%;
-            max-height: 65vh; /* Уменьшено с 80vh на 65vh */
+            max-height: 65vh;
             width: auto;
             height: auto;
             object-fit: contain;
@@ -450,11 +455,11 @@
             
             .product-image-main {
                 order: 1;
-                max-height: 55vh; /* Уменьшено для мобильных устройств */
+                max-height: 55vh;
             }
             
             .product-image-main img {
-                max-height: 55vh; /* Уменьшено для мобильных устройств */
+                max-height: 55vh;
             }
             
             .product-details {
@@ -483,11 +488,11 @@
             }
             
             .product-image-main {
-                max-height: 50vh; /* Уменьшено для маленьких экранов */
+                max-height: 50vh;
             }
             
             .product-image-main img {
-                max-height: 50vh; /* Уменьшено для маленьких экранов */
+                max-height: 50vh;
             }
             
             .product-thumbnail {
@@ -502,10 +507,9 @@
 <body>
     <!-- Шапка -->
     <header>
-        <div class="logo">JANART STUDIO</div>
+        <div class="logo" id="home-logo">JANART STUDIO</div>
         <nav>
             <ul>
-                <li><a href="#" class="nav-link" data-page="home">Главная</a></li>
                 <li><a href="#" class="nav-link" data-page="gallery">Галерея</a></li>
                 <li><a href="#" class="nav-link" data-page="bio">Об авторе</a></li>
                 <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
@@ -622,6 +626,11 @@
             
             document.getElementById('main-hero').addEventListener('click', function() {
                 showPage('gallery');
+            });
+            
+            // Обработчик клика по логотипу
+            document.getElementById('home-logo').addEventListener('click', function() {
+                showPage('home');
             });
         });
 

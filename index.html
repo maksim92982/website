@@ -256,6 +256,55 @@
             transition: transform 0.3s ease;
         }
         
+        /* Стрелки навигации */
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+            transition: background-color 0.3s ease;
+            border: none;
+        }
+        
+        .nav-arrow:hover {
+            background: rgba(255, 255, 255, 0.95);
+        }
+        
+        .nav-arrow.prev {
+            left: 10px;
+        }
+        
+        .nav-arrow.next {
+            right: 10px;
+        }
+        
+        .nav-arrow::before {
+            content: '';
+            width: 12px;
+            height: 12px;
+            border: 2px solid #000;
+            border-width: 2px 2px 0 0;
+            display: inline-block;
+        }
+        
+        .nav-arrow.prev::before {
+            transform: rotate(-135deg);
+            margin-right: -2px;
+        }
+        
+        .nav-arrow.next::before {
+            transform: rotate(45deg);
+            margin-left: -2px;
+        }
+        
         .product-details {
             flex: 1;
             min-width: 300px;
@@ -423,7 +472,7 @@
             }
             
             .mobile-menu {
-                display: none; /* Скрываем кнопку меню */
+                display: none;
             }
             
             .mobile-gallery-link {
@@ -498,6 +547,17 @@
                 height: 60px;
             }
             
+            /* Стрелки для мобильной версии */
+            .nav-arrow {
+                width: 35px;
+                height: 35px;
+            }
+            
+            .nav-arrow::before {
+                width: 10px;
+                height: 10px;
+            }
+            
             .social-links {
                 flex-direction: column;
                 gap: 20px;
@@ -542,6 +602,24 @@
             .product-thumbnail {
                 width: 50px;
                 height: 50px;
+            }
+            
+            .nav-arrow {
+                width: 30px;
+                height: 30px;
+            }
+            
+            .nav-arrow::before {
+                width: 8px;
+                height: 8px;
+            }
+            
+            .nav-arrow.prev {
+                left: 5px;
+            }
+            
+            .nav-arrow.next {
+                right: 5px;
             }
         }
     </style>
@@ -629,7 +707,7 @@
         <div class="mobile-bio-link" data-page="bio">Об авторе</div>
         <div class="social-links">
             <a href="https://wa.me/79046006365" target="_blank">WhatsApp</a>
-            <a href="https://www.instagram.com/" target="_blank">Instagram</a>
+            <a href="https://www.instagram.com/janart_home" target="_blank">Instagram</a>
         </div>
     </footer>
 
@@ -681,6 +759,9 @@
             document.getElementById('home-logo').addEventListener('click', function() {
                 showPage('home');
             });
+            
+            // Обработчики клавиатуры для стрелок
+            document.addEventListener('keydown', handleKeyPress);
         });
 
         // Инициализация галереи
@@ -734,7 +815,7 @@
                 });
             }
             
-            // Мобильное меню (оставлено на случай, если понадобится в будущем)
+            // Мобильное меню
             const mobileMenu = document.querySelector('.mobile-menu');
             const mobileNav = document.querySelector('.mobile-nav');
             const closeMenu = document.querySelector('.close-menu');
@@ -799,6 +880,8 @@
                         </div>
                         <div class="product-image-main" id="product-image-container">
                             <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
+                            <button class="nav-arrow prev" id="prev-arrow"></button>
+                            <button class="nav-arrow next" id="next-arrow"></button>
                         </div>
                     </div>
                     <div class="product-details">
@@ -819,6 +902,7 @@
             
             initThumbnails(product);
             initSwipeNavigation();
+            initArrowNavigation();
             
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
@@ -871,6 +955,31 @@
             });
         }
 
+        // Инициализация навигации стрелками
+        function initArrowNavigation() {
+            const prevArrow = document.getElementById('prev-arrow');
+            const nextArrow = document.getElementById('next-arrow');
+            
+            if (prevArrow) {
+                prevArrow.addEventListener('click', showPreviousImage);
+            }
+            
+            if (nextArrow) {
+                nextArrow.addEventListener('click', showNextImage);
+            }
+        }
+
+        // Обработка нажатий клавиш
+        function handleKeyPress(e) {
+            if (document.getElementById('product-page').style.display === 'block') {
+                if (e.key === 'ArrowLeft') {
+                    showPreviousImage();
+                } else if (e.key === 'ArrowRight') {
+                    showNextImage();
+                }
+            }
+        }
+
         // Обработка свайпов
         function handleSwipe() {
             const minSwipeDistance = 50;
@@ -882,10 +991,8 @@
             if (Math.abs(distance) < minSwipeDistance) return;
             
             if (distance > 0) {
-                // Свайп влево - следующее изображение
                 showNextImage();
             } else {
-                // Свайп вправо - предыдущее изображение
                 showPreviousImage();
             }
             

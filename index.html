@@ -17,7 +17,6 @@
             color: #000;
             line-height: 1.6;
             background-color: #fff;
-            overflow-x: hidden; /* Предотвращает горизонтальный скролл */
         }
         
         a {
@@ -969,18 +968,19 @@
 
         // Показать страницу
         function showPage(pageId) {
-            // Скрываем все страницы
-            const pages = document.querySelectorAll('.page, .product-page');
-            pages.forEach(page => {
+            // Скрываем все возможные страницы
+            const allPages = document.querySelectorAll('.page, .product-page, .bio-page, .contact-page');
+            allPages.forEach(page => {
                 page.style.display = 'none';
             });
             
             // Показываем нужную страницу
             const targetPage = document.getElementById(`${pageId}-page`);
             if (targetPage) {
-                targetPage.style.display = pageId === 'product' ? 'block' : 'block';
+                targetPage.style.display = 'block';
             }
             
+            // Всегда прокручиваем наверх
             window.scrollTo(0, 0);
         }
 

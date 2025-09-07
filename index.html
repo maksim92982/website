@@ -205,6 +205,7 @@
             flex-direction: row;
             align-items: flex-start;
             gap: 15px;
+            position: relative;
         }
         
         .product-thumbnails {
@@ -241,6 +242,9 @@
             justify-content: center;
             align-items: flex-start;
             max-height: 65vh;
+            position: relative;
+            overflow: hidden;
+            touch-action: pan-y;
         }
         
         .product-image-main img {
@@ -249,6 +253,7 @@
             width: auto;
             height: auto;
             object-fit: contain;
+            transition: transform 0.3s ease;
         }
         
         .product-details {
@@ -384,6 +389,15 @@
             opacity: 0.7;
         }
         
+        /* Мобильная навигация */
+        .mobile-gallery-link {
+            display: none;
+        }
+        
+        .mobile-bio-link {
+            display: none;
+        }
+        
         /* Адаптивность */
         @media (max-width: 1024px) {
             .gallery {
@@ -409,7 +423,19 @@
             }
             
             .mobile-menu {
+                display: none; /* Скрываем кнопку меню */
+            }
+            
+            .mobile-gallery-link {
                 display: block;
+                font-size: 16px;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                cursor: pointer;
+            }
+            
+            .mobile-gallery-link:hover {
+                opacity: 0.7;
             }
             
             .main-content,
@@ -456,6 +482,7 @@
             .product-image-main {
                 order: 1;
                 max-height: 55vh;
+                width: 100%;
             }
             
             .product-image-main img {
@@ -479,6 +506,23 @@
             .social-links a {
                 font-size: 16px;
                 padding: 10px 15px;
+            }
+            
+            /* Мобильная версия футера с разделом "Об авторе" */
+            footer {
+                padding: 40px 20px;
+            }
+            
+            .mobile-bio-link {
+                display: block;
+                font-size: 18px;
+                padding: 12px 20px;
+                margin-bottom: 20px;
+                cursor: pointer;
+            }
+            
+            .mobile-bio-link:hover {
+                opacity: 0.7;
             }
         }
         
@@ -515,6 +559,7 @@
                 <li><a href="#" class="nav-link" data-page="contact">Контакты</a></li>
             </ul>
         </nav>
+        <div class="mobile-gallery-link" data-page="gallery">Галерея</div>
         <div class="mobile-menu">Меню</div>
     </header>
 
@@ -581,6 +626,7 @@
 
     <!-- Футер -->
     <footer>
+        <div class="mobile-bio-link" data-page="bio">Об авторе</div>
         <div class="social-links">
             <a href="https://wa.me/79046006365" target="_blank">WhatsApp</a>
             <a href="https://www.instagram.com/" target="_blank">Instagram</a>
@@ -596,6 +642,9 @@
         
         // Переменные для управления панелью миниатюр
         let currentProduct = null;
+        let currentImageIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
         
         // Автоматическое создание данных для галереи
         const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
@@ -669,7 +718,23 @@
                 });
             });
             
-            // Мобильное меню
+            // Мобильная кнопка галереи
+            const mobileGalleryLink = document.querySelector('.mobile-gallery-link');
+            if (mobileGalleryLink) {
+                mobileGalleryLink.addEventListener('click', function() {
+                    showPage('gallery');
+                });
+            }
+            
+            // Мобильная кнопка "Об авторе" в футере
+            const mobileBioLink = document.querySelector('.mobile-bio-link');
+            if (mobileBioLink) {
+                mobileBioLink.addEventListener('click', function() {
+                    showPage('bio');
+                });
+            }
+            
+            // Мобильное меню (оставлено на случай, если понадобится в будущем)
             const mobileMenu = document.querySelector('.mobile-menu');
             const mobileNav = document.querySelector('.mobile-nav');
             const closeMenu = document.querySelector('.close-menu');
@@ -718,6 +783,7 @@
         // Показать страницу товара
         function showProduct(product) {
             currentProduct = product;
+            currentImageIndex = 0;
             const productPage = document.getElementById('product-page');
             
             productPage.innerHTML = `
@@ -726,12 +792,12 @@
                     <div class="product-gallery">
                         <div class="product-thumbnails" id="thumbnailsContainer">
                             ${product.images.map((image, index) => `
-                                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}">
+                                <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}" data-index="${index}">
                                     <img src="${image}" alt="Миниатюра ${index + 1}">
                                 </div>
                             `).join('')}
                         </div>
-                        <div class="product-image-main">
+                        <div class="product-image-main" id="product-image-container">
                             <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
                         </div>
                     </div>
@@ -752,6 +818,7 @@
             `;
             
             initThumbnails(product);
+            initSwipeNavigation();
             
             document.getElementById('back-to-gallery').addEventListener('click', function() {
                 showPage('gallery');
@@ -776,6 +843,7 @@
                     this.classList.add('active');
                     const mainImage = document.getElementById('main-product-image');
                     mainImage.src = this.getAttribute('data-image');
+                    currentImageIndex = parseInt(this.getAttribute('data-index'));
                     
                     mainImage.style.maxWidth = '100%';
                     mainImage.style.maxHeight = '65vh';
@@ -784,6 +852,80 @@
                     mainImage.style.objectFit = 'contain';
                 });
             });
+        }
+
+        // Инициализация свайп-навигации
+        function initSwipeNavigation() {
+            const imageContainer = document.getElementById('product-image-container');
+            const mainImage = document.getElementById('main-product-image');
+            
+            if (!imageContainer || !mainImage) return;
+            
+            imageContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            });
+            
+            imageContainer.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                handleSwipe();
+            });
+        }
+
+        // Обработка свайпов
+        function handleSwipe() {
+            const minSwipeDistance = 50;
+            
+            if (!touchStartX || !touchEndX) return;
+            
+            const distance = touchStartX - touchEndX;
+            
+            if (Math.abs(distance) < minSwipeDistance) return;
+            
+            if (distance > 0) {
+                // Свайп влево - следующее изображение
+                showNextImage();
+            } else {
+                // Свайп вправо - предыдущее изображение
+                showPreviousImage();
+            }
+            
+            touchStartX = 0;
+            touchEndX = 0;
+        }
+
+        // Показать следующее изображение
+        function showNextImage() {
+            if (!currentProduct) return;
+            
+            currentImageIndex = (currentImageIndex + 1) % currentProduct.images.length;
+            updateMainImage();
+        }
+
+        // Показать предыдущее изображение
+        function showPreviousImage() {
+            if (!currentProduct) return;
+            
+            currentImageIndex = (currentImageIndex - 1 + currentProduct.images.length) % currentProduct.images.length;
+            updateMainImage();
+        }
+
+        // Обновить основное изображение
+        function updateMainImage() {
+            const mainImage = document.getElementById('main-product-image');
+            const thumbnails = document.querySelectorAll('.product-thumbnail');
+            
+            if (mainImage && currentProduct) {
+                mainImage.src = currentProduct.images[currentImageIndex];
+                
+                // Обновить активную миниатюру
+                thumbnails.forEach((thumb, index) => {
+                    if (index === currentImageIndex) {
+                        thumb.classList.add('active');
+                    } else {
+                        thumb.classList.remove('active');
+                    }
+                });
+            }
         }
     </script>
 </body>

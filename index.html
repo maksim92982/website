@@ -5,6 +5,166 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JANART STUDIO</title>
     <style>
+
+        /* Стили для админ-панели */
+        .admin-panel {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 3000;
+            padding: 100px 20px 20px;
+            overflow-y: auto;
+        }
+
+        .admin-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 3001;
+        }
+
+        .admin-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .admin-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+
+        .admin-section h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .admin-input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .admin-btn {
+            background: #000;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .admin-btn:hover {
+            background: #333;
+        }
+
+        .admin-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .painting-item {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+        }
+
+        .image-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .preview-img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .upload-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+
+        .github-config {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin: 10px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #007bff;
+            transition: width 0.3s ease;
+        }
+
+        .config-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
         /* Общие стили */
         * {
             margin: 0;
@@ -731,7 +891,63 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Italiana&display=swap" rel="stylesheet">
 </head>
-<body>
+<body><!-- Панель администратора -->
+    <div id="admin-panel" class="admin-panel">
+        <div class="admin-header">
+            <h2>Панель администратора JANART STUDIO</h2>
+            <button class="admin-close" id="admin-close">✕</button>
+        </div>
+        
+        <div class="github-config">
+            <h3>Настройки GitHub</h3>
+            <div class="admin-form">
+                <input type="password" id="github-token" class="admin-input" placeholder="GitHub Personal Access Token" value="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">
+                <input type="text" id="github-owner" class="admin-input" placeholder="Владелец репозитория (username)" value="maksim92982">
+                <input type="text" id="github-repo" class="admin-input" placeholder="Название репозитория" value="website">
+                <input type="text" id="github-path" class="admin-input" placeholder="Путь к папке" value="images/gallery">
+                <div id="config-status" class="config-status"></div>
+                <button class="admin-btn" id="save-github-config">Сохранить настройки GitHub</button>
+                <button class="admin-btn" id="test-connection">Проверить подключение</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Настройки галереи</h2>
+            <div class="admin-form">
+                <label>Количество картин в галерее:</label>
+                <input type="number" id="paintings-count" class="admin-input" min="1" value="3">
+                <button class="admin-btn" id="save-settings">Сохранить настройки</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Добавить новую картину</h2>
+            <div class="admin-form">
+                <input type="text" id="painting-title" class="admin-input" placeholder="Название картины">
+                <input type="text" id="painting-size" class="admin-input" placeholder="Размер (например: 36x48)">
+                <input type="text" id="painting-price" class="admin-input" placeholder="Цена">
+                <textarea id="painting-description" class="admin-input" placeholder="Описание" rows="3"></textarea>
+                
+                <label>Загрузите фотографии для этой картины (первая будет основной):</label>
+                <input type="file" id="painting-images" class="admin-input" multiple accept="image/*">
+                
+                <div class="image-preview" id="image-preview"></div>
+                <div class="progress-bar" id="upload-progress" style="display: none;">
+                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                </div>
+                <div id="upload-status" class="upload-status"></div>
+                
+                <button class="admin-btn" id="add-painting">Добавить картину в GitHub</button>
+            </div>
+        </div>
+
+        <div class="admin-section">
+            <h2>Управление существующими картинами</h2>
+            <div id="paintings-list">
+                <!-- Список картин будет генерироваться здесь -->
+            </div>
+        </div>
+    </div>
     <!-- Шапка -->
     <header>
         <div class="logo" id="home-logo">JANART STUDIO</div>
@@ -838,6 +1054,470 @@
     </div>
 
     <script>
+
+        // ===== КОНФИГУРАЦИЯ GITHUB =====
+        const GITHUB_CONFIG = {
+            token: localStorage.getItem('github_token') || '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',
+            owner: localStorage.getItem('github_owner') || 'maksim92982',
+            repo: localStorage.getItem('github_repo') || 'website',
+            path: localStorage.getItem('github_path') || 'images/gallery'
+        };
+
+        // ===== ОСНОВНЫЕ ПЕРЕМЕННЫЕ =====
+        let galleryItems = [];
+        let currentProduct = null;
+        let currentImageIndex = 0;
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        // ===== ФУНКЦИИ ДЛЯ РАБОТЫ С GITHUB API =====
+
+        // Загрузка изображения в GitHub
+        async function uploadImageToGitHub(file, paintingId, imageNumber) {
+            const statusDiv = document.getElementById('upload-status');
+            
+            try {
+                // Формируем путь для изображения
+                const filename = `${imageNumber}.JPG`;
+                const path = `${GITHUB_CONFIG.path}/${paintingId}/${filename}`;
+                
+                // Конвертируем файл в base64
+                const base64Content = await fileToBase64(file);
+                
+                // Формируем запрос к GitHub API
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${path}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.token}`,
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: `Add image for painting ${paintingId}`,
+                        content: base64Content.split(',')[1] // Убираем префикс data:image/...;base64,
+                    })
+                });
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.message || `Ошибка загрузки: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Формируем raw URL для изображения
+                const rawUrl = data.content.download_url;
+                
+                return rawUrl;
+                
+            } catch (error) {
+                console.error('Ошибка загрузки в GitHub:', error);
+                statusDiv.textContent = `Ошибка: ${error.message}`;
+                statusDiv.className = 'upload-status error';
+                throw error;
+            }
+        }
+
+        // Конвертация файла в base64
+        function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // Проверка подключения к GitHub
+        async function testGitHubConnection() {
+            const statusDiv = document.getElementById('config-status');
+            const testBtn = document.getElementById('test-connection');
+            
+            try {
+                testBtn.disabled = true;
+                statusDiv.textContent = 'Проверяем подключение...';
+                statusDiv.className = 'config-status warning';
+                
+                const response = await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}`, {
+                    headers: {
+                        'Authorization': `token ${GITHUB_CONFIG.token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    statusDiv.textContent = '✅ Подключение успешно! Репозиторий доступен.';
+                    statusDiv.className = 'config-status success';
+                } else {
+                    throw new Error(`Ошибка: ${response.status} ${response.statusText}`);
+                }
+            } catch (error) {
+                statusDiv.textContent = `❌ Ошибка подключения: ${error.message}`;
+                statusDiv.className = 'config-status error';
+            } finally {
+                testBtn.disabled = false;
+            }
+        }
+
+        // ===== ФУНКЦИИ АДМИН-ПАНЕЛИ =====
+
+        // Проверяем, является ли текущий URL админским
+        function checkAdminURL() {
+            if (window.location.hash === '#admin12345') {
+                showAdminPanel();
+            }
+        }
+
+        // Показать панель администратора
+        function showAdminPanel() {
+            const adminPanel = document.getElementById('admin-panel');
+            if (adminPanel) {
+                adminPanel.style.display = 'block';
+                loadPaintingsList();
+                loadGithubConfig();
+            }
+        }
+
+        // Загрузить настройки GitHub
+        function loadGithubConfig() {
+            document.getElementById('github-token').value = GITHUB_CONFIG.token;
+            document.getElementById('github-owner').value = GITHUB_CONFIG.owner;
+            document.getElementById('github-repo').value = GITHUB_CONFIG.repo;
+            document.getElementById('github-path').value = GITHUB_CONFIG.path;
+        }
+
+        // Сохранить настройки GitHub
+        function saveGithubConfig() {
+            GITHUB_CONFIG.token = document.getElementById('github-token').value;
+            GITHUB_CONFIG.owner = document.getElementById('github-owner').value;
+            GITHUB_CONFIG.repo = document.getElementById('github-repo').value;
+            GITHUB_CONFIG.path = document.getElementById('github-path').value;
+            
+            // Сохраняем в localStorage
+            localStorage.setItem('github_token', GITHUB_CONFIG.token);
+            localStorage.setItem('github_owner', GITHUB_CONFIG.owner);
+            localStorage.setItem('github_repo', GITHUB_CONFIG.repo);
+            localStorage.setItem('github_path', GITHUB_CONFIG.path);
+            
+            const statusDiv = document.getElementById('config-status');
+            statusDiv.textContent = '✅ Настройки GitHub сохранены!';
+            statusDiv.className = 'config-status success';
+        }
+
+        // Добавить новую картину с загрузкой в GitHub
+        async function addNewPainting() {
+            const title = document.getElementById('painting-title').value;
+            const size = document.getElementById('painting-size').value;
+            const price = document.getElementById('painting-price').value;
+            const description = document.getElementById('painting-description').value;
+            const imageInput = document.getElementById('painting-images');
+            const statusDiv = document.getElementById('upload-status');
+            const addButton = document.getElementById('add-painting');
+            const progressBar = document.getElementById('upload-progress');
+            
+            // Проверяем настройки GitHub
+            if (!GITHUB_CONFIG.token || !GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
+                statusDiv.textContent = 'Сначала настройте подключение к GitHub';
+                statusDiv.className = 'upload-status error';
+                return;
+            }
+            
+            // Проверяем заполненность полей
+            if (!title || !size || !price || !description) {
+                statusDiv.textContent = 'Заполните все поля';
+                statusDiv.className = 'upload-status error';
+                return;
+            }
+            
+            if (!imageInput.files || imageInput.files.length === 0) {
+                statusDiv.textContent = 'Добавьте хотя бы одно изображение';
+                statusDiv.className = 'upload-status error';
+                return;
+            }
+            
+            // Блокируем кнопку во время загрузки
+            addButton.disabled = true;
+            statusDiv.textContent = 'Начинаем загрузку...';
+            statusDiv.className = 'upload-status warning';
+            progressBar.style.display = 'block';
+            
+            try {
+                // Генерируем ID для новой картины
+                const paintingId = Date.now(); // Используем timestamp для уникальности
+                const imageUrls = [];
+                
+                // Загружаем каждое изображение
+                for (let i = 0; i < imageInput.files.length; i++) {
+                    const file = imageInput.files[i];
+                    
+                    // Обновляем прогресс
+                    const progress = Math.round((i / imageInput.files.length) * 100);
+                    document.getElementById('progress-fill').style.width = `${progress}%`;
+                    statusDiv.textContent = `Загружаем изображение ${i + 1} из ${imageInput.files.length}`;
+                    
+                    // Загружаем изображение в GitHub
+                    const imageUrl = await uploadImageToGitHub(file, paintingId, i + 1);
+                    imageUrls.push(imageUrl);
+                }
+                
+                // Полный прогресс
+                document.getElementById('progress-fill').style.width = '100%';
+                
+                // Создаем новый элемент галереи
+                const newItem = {
+                    id: paintingId,
+                    title: title,
+                    size: size,
+                    price: price,
+                    mainImage: imageUrls[0],
+                    images: imageUrls,
+                    soldOut: false,
+                    description: description
+                };
+                
+                // Добавляем в массив
+                galleryItems.push(newItem);
+                
+                // Сохраняем в localStorage
+                saveGalleryData();
+                
+                // Обновляем галерею
+                initGallery();
+                
+                // Очищаем форму
+                document.getElementById('painting-title').value = '';
+                document.getElementById('painting-size').value = '';
+                document.getElementById('painting-price').value = '';
+                document.getElementById('painting-description').value = '';
+                document.getElementById('image-preview').innerHTML = '';
+                imageInput.value = '';
+                progressBar.style.display = 'none';
+                
+                // Показываем сообщение об успехе
+                statusDiv.textContent = '✅ Картина успешно добавлена и загружена в GitHub!';
+                statusDiv.className = 'upload-status success';
+                
+                // Обновляем список картин
+                loadPaintingsList();
+                
+            } catch (error) {
+                console.error('Ошибка добавления картины:', error);
+                statusDiv.textContent = `❌ Ошибка: ${error.message}`;
+                statusDiv.className = 'upload-status error';
+            } finally {
+                // Разблокируем кнопку
+                addButton.disabled = false;
+            }
+        }
+
+        // Предпросмотр изображений перед загрузкой
+        function setupImagePreview() {
+            const imageInput = document.getElementById('painting-images');
+            const previewContainer = document.getElementById('image-preview');
+            
+            if (imageInput && previewContainer) {
+                imageInput.addEventListener('change', function() {
+                    previewContainer.innerHTML = '';
+                    const statusDiv = document.getElementById('upload-status');
+                    statusDiv.className = 'upload-status';
+                    statusDiv.textContent = '';
+                    
+                    if (this.files && this.files.length > 0) {
+                        for (let i = 0; i < this.files.length; i++) {
+                            const file = this.files[i];
+                            const reader = new FileReader();
+                            
+                            reader.onload = function(e) {
+                                const img = document.createElement('img');
+                                img.src = e.target.result;
+                                img.className = 'preview-img';
+                                previewContainer.appendChild(img);
+                            }
+                            
+                            reader.readAsDataURL(file);
+                        }
+                        
+                        statusDiv.textContent = `Выбрано ${this.files.length} изображений`;
+                        statusDiv.className = 'upload-status success';
+                    }
+                });
+            }
+        }
+
+        // Загрузить список картин для управления
+        function loadPaintingsList() {
+            const paintingsList = document.getElementById('paintings-list');
+            if (!paintingsList) return;
+            
+            paintingsList.innerHTML = '<p>Загрузка списка картин...</p>';
+            
+            // В реальном приложении здесь бы загрузка из GitHub
+            // Для демонстрации используем localStorage
+            setTimeout(() => {
+                paintingsList.innerHTML = '';
+                
+                if (galleryItems.length === 0) {
+                    paintingsList.innerHTML = '<p>Картин пока нет</p>';
+                    return;
+                }
+                
+                galleryItems.forEach((item, index) => {
+                    const paintingElement = document.createElement('div');
+                    paintingElement.className = 'painting-item';
+                    paintingElement.innerHTML = `
+                        <h3>${item.title}</h3>
+                        <p>Размер: ${item.size} | Цена: ${item.price}</p>
+                        <p>Количество фото: ${item.images.length}</p>
+                        <button class="delete-btn" data-index="${index}">Удалить</button>
+                    `;
+                    
+                    paintingsList.appendChild(paintingElement);
+                });
+                
+                // Добавляем обработчики для кнопок удаления
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const index = parseInt(this.getAttribute('data-index'));
+                        deletePainting(index);
+                    });
+                });
+            }, 500);
+        }
+
+        // Удалить картину
+        function deletePainting(index) {
+            if (confirm('Вы уверены, что хотите удалить эту картину?')) {
+                galleryItems.splice(index, 1);
+                saveGalleryData();
+                loadPaintingsList();
+                initGallery(); // Перезагружаем галерею
+            }
+        }
+
+        // Сохранить данные галереи в localStorage
+        function saveGalleryData() {
+            localStorage.setItem('janart_gallery_data', JSON.stringify(galleryItems));
+        }
+
+        // Загрузить данные галереи из localStorage
+        function loadGalleryData() {
+            const savedData = localStorage.getItem('janart_gallery_data');
+            if (savedData) {
+                return JSON.parse(savedData);
+            }
+            return null;
+        }
+
+        // Инициализация админ-панели
+        function initAdminPanel() {
+            // Проверяем URL при загрузке
+            checkAdminURL();
+            
+            // Настройка кнопки закрытия
+            const adminCloseBtn = document.getElementById('admin-close');
+            if (adminCloseBtn) {
+                adminCloseBtn.addEventListener('click', function() {
+                    document.getElementById('admin-panel').style.display = 'none';
+                    window.location.hash = '';
+                });
+            }
+            
+            // Настройка кнопки сохранения настроек GitHub
+            const saveGithubBtn = document.getElementById('save-github-config');
+            if (saveGithubBtn) {
+                saveGithubBtn.addEventListener('click', saveGithubConfig);
+            }
+            
+            // Настройка кнопки проверки подключения
+            const testConnectionBtn = document.getElementById('test-connection');
+            if (testConnectionBtn) {
+                testConnectionBtn.addEventListener('click', testGitHubConnection);
+            }
+            
+            // Настройка кнопки сохранения настроек
+            const saveSettingsBtn = document.getElementById('save-settings');
+            if (saveSettingsBtn) {
+                saveSettingsBtn.addEventListener('click', function() {
+                    const count = parseInt(document.getElementById('paintings-count').value);
+                    if (count && count > 0) {
+                        alert(`Настройки сохранены! Количество картин: ${count}`);
+                    }
+                });
+            }
+            
+            // Настройка предпросмотра изображений
+            setupImagePreview();
+            
+            // Настройка кнопки добавления картины
+            const addPaintingBtn = document.getElementById('add-painting');
+            if (addPaintingBtn) {
+                addPaintingBtn.addEventListener('click', addNewPainting);
+            }
+            
+            // Загружаем сохраненные данные при инициализации
+            const savedData = loadGalleryData();
+            if (savedData) {
+                galleryItems = savedData;
+            }
+        }
+
+        // ===== ОСНОВНАЯ ФУНКЦИОНАЛЬНОСТЬ САЙТА =====
+        // (ваш существующий код остается без изменений)
+
+        // Автоматическое создание данных для галереи
+        function initializeGalleryItems() {
+            // Загружаем из localStorage или создаем по умолчанию
+            const savedData = loadGalleryData();
+            if (savedData) {
+                galleryItems = savedData;
+                return;
+            }
+            
+            // Данные по умолчанию
+            galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
+                const paintingNumber = i + 1;
+                const images = Array.from({length: photosPerPainting}, (_, j) => {
+                    const photoNumber = j + 1;
+                    return `https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/${paintingNumber}/${photoNumber}.JPG`;
+                });
+                
+                return {
+                    id: paintingNumber,
+                    title: `Без названия, №${paintingNumber}`,
+                    size: paintingNumber % 2 === 0 ? '36" x 48"' : '48" x 36"',
+                    price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
+                    mainImage: images[0],
+                    images: images,
+                    soldOut: paintingNumber === 1,
+                    description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
+                };
+            });
+        }
+
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализируем данные галереи
+            initializeGalleryItems();
+            
+            // Инициализируем основное приложение
+            initGallery();
+            initNavigation();
+            initForms();
+            initContactsModal();
+            
+            // Инициализируем админ-панель
+            initAdminPanel();
+            
+            document.getElementById('main-hero').addEventListener('click', function() {
+                showPage('gallery');
+            });
+            
+            // Обработчик клика по логотипу
+            document.getElementById('home-logo').addEventListener('click', function() {
+                showPage('home');
+            });
+            
+            // Обработчики клавиатуры для стрелок
+            document.addEventListener('keydown', handleKeyPress);
+        });
         // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее. количество фоток
         const numberOfPaintings = 3;
         

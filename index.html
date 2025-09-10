@@ -901,7 +901,7 @@
         <div class="github-config">
             <h3>Настройки GitHub</h3>
             <div class="admin-form">
-                <input type="password" id="github-token" class="admin-input" placeholder="GitHub Personal Access Token" value="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">
+                <input type="password" id="github-token" class="admin-input" placeholder="GitHub Personal Access Token" value="">
                 <input type="text" id="github-owner" class="admin-input" placeholder="Владелец репозитория (username)" value="maksim92982">
                 <input type="text" id="github-repo" class="admin-input" placeholder="Название репозитория" value="website">
                 <input type="text" id="github-path" class="admin-input" placeholder="Путь к папке" value="images/gallery">
@@ -1055,9 +1055,9 @@
 
     <script>
 
-        // ===== КОНФИГУРАЦИЯ GITHUB =====
+        // =====  GITHUB =====
         const GITHUB_CONFIG = {
-            token: localStorage.getItem('github_token') || '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',
+            token: localStorage.getItem('github_token') || '',
             owner: localStorage.getItem('github_owner') || 'maksim92982',
             repo: localStorage.getItem('github_repo') || 'website',
             path: localStorage.getItem('github_path') || 'images/gallery'
@@ -1066,7 +1066,7 @@
         // ===== ОСНОВНЫЕ ПЕРЕМЕННЫЕ =====
         let galleryItems = [];
         if (typeof currentProduct === 'undefined') {
-    let currentProduct = null;
+    var currentProduct = null;
 }
         let currentImageIndex = 0;
         let touchStartX = 0;
@@ -1520,38 +1520,10 @@
             // Обработчики клавиатуры для стрелок
             document.addEventListener('keydown', handleKeyPress);
         });
-        // КОНФИГУРАЦИЯ: укажите здесь количество картин в галерее. количество фоток
-        const numberOfPaintings = 3;
+
+
         
-        // Количество фотографий для каждой картины
-        const photosPerPainting = 6;
         
-        // Переменные для управления панелью миниатюр
-        let currentProduct = null;
-        let currentImageIndex = 0;
-        let touchStartX = 0;
-        let touchEndX = 0;
-        
-        // Автоматическое создание данных для галереи
-        const galleryItems = Array.from({length: numberOfPaintings}, (_, i) => {
-            const paintingNumber = i + 1;
-            
-            const images = Array.from({length: photosPerPainting}, (_, j) => {
-                const photoNumber = j + 1;
-                return `images/gallery/${paintingNumber}/${photoNumber}.JPG`;
-            });
-            
-            return {
-                id: paintingNumber,
-                title: `Без названия, №${paintingNumber}`,
-                size: paintingNumber % 2 === 0 ? '36" x 48"' : '48" x 36"',
-                price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
-                mainImage: images[0],
-                images: images,
-                soldOut: paintingNumber === 1,
-                description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
-            };
-        });
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', function() {

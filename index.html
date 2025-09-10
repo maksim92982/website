@@ -1065,7 +1065,9 @@
 
         // ===== ОСНОВНЫЕ ПЕРЕМЕННЫЕ =====
         let galleryItems = [];
-        let currentProduct = null;
+        if (typeof currentProduct === 'undefined') {
+    let currentProduct = null;
+}
         let currentImageIndex = 0;
         let touchStartX = 0;
         let touchEndX = 0;

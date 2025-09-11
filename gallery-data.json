@@ -53,20 +53,8 @@
       ],
       "soldOut": false,
       "description": "Акрил, мраморная пыль и пигмент на холсте, 2024"
-    },
-    {
-      "id": 3,
-      "title": "Без названия, №3",
-      "size": "48\" x 36\"",
-      "price": "3 450 ₽",
-      "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/3/1.jpg",
-      "images": [
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/3/1.jpg"
-      ],
-      "soldOut": false,
-      "description": "Акрил, мраморная пыль и пигмент на холсте, 2024"
     }
   ],
-  "lastUpdated": "2025-09-11T17:59:55.618Z",
+  "lastUpdated": "2025-09-11T17:59:58.238Z",
   "version": "1.0"
 }

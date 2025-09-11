@@ -944,6 +944,20 @@
         </div>
 
         <div class="admin-section">
+            <h2>Изменение порядка картин в галерее</h2>
+            <div style="margin-bottom: 15px; padding: 10px; background: #e9ecef; border-radius: 5px;">
+                <strong>Изменение порядка картин:</strong>
+                <div style="margin-top: 10px;">
+                    <button class="admin-btn" onclick="moveSelectedPainting('up')" style="margin-right: 10px; padding: 5px 15px; font-size: 12px;">↑ Вверх</button>
+                    <button class="admin-btn" onclick="moveSelectedPainting('down')" style="padding: 5px 15px; font-size: 12px;">↓ Вниз</button>
+                </div>
+            </div>
+            <div id="paintings-order-config">
+                <!-- Список картин для изменения порядка будет генерироваться здесь -->
+            </div>
+        </div>
+
+        <div class="admin-section">
             <h2>Добавить новую картину</h2>
             <div class="admin-form">
                 <input type="text" id="painting-title" class="admin-input" placeholder="Название картины">
@@ -1295,6 +1309,9 @@
                 // Обновляем конфигурацию фотографий
                 generatePhotosConfig();
                 
+                // Генерируем конфигурацию порядка картин
+                generatePaintingsOrderConfig();
+                
                 // Обновляем галерею
                 initGallery();
                 
@@ -1360,6 +1377,8 @@
                     <div style="margin-bottom: 15px;">
                         <button class="admin-btn" id="add-photos-btn-${i}" style="margin-right: 10px;">Добавить фотографии</button>
                         <button class="admin-btn" id="manage-photos-btn-${i}" style="background: #28a745; margin-right: 10px;">Управлять фотографиями</button>
+                        <button class="admin-btn" id="move-painting-up-btn-${i}" style="background: #17a2b8; margin-right: 5px; padding: 5px 10px; font-size: 12px;">↑ Вверх</button>
+                        <button class="admin-btn" id="move-painting-down-btn-${i}" style="background: #17a2b8; margin-right: 10px; padding: 5px 10px; font-size: 12px;">↓ Вниз</button>
                         <button class="admin-btn" id="delete-painting-btn-${i}" style="background: #dc3545;">Удалить картину</button>
                     </div>
                     <div id="photos-preview-${i}" class="image-preview" style="margin-top: 10px;"></div>
@@ -1376,6 +1395,8 @@
             for (let i = 1; i <= numberOfPaintings; i++) {
                 const addBtn = document.getElementById(`add-photos-btn-${i}`);
                 const manageBtn = document.getElementById(`manage-photos-btn-${i}`);
+                const moveUpBtn = document.getElementById(`move-painting-up-btn-${i}`);
+                const moveDownBtn = document.getElementById(`move-painting-down-btn-${i}`);
                 const deleteBtn = document.getElementById(`delete-painting-btn-${i}`);
                 
                 if (addBtn) {
@@ -1387,6 +1408,18 @@
                 if (manageBtn) {
                     manageBtn.addEventListener('click', function() {
                         togglePhotosManagement(i);
+                    });
+                }
+                
+                if (moveUpBtn) {
+                    moveUpBtn.addEventListener('click', function() {
+                        movePaintingInList(i - 1, 'up');
+                    });
+                }
+                
+                if (moveDownBtn) {
+                    moveDownBtn.addEventListener('click', function() {
+                        movePaintingInList(i - 1, 'down');
                     });
                 }
                 
@@ -1422,13 +1455,22 @@
                 return;
             }
             
-            photosListDiv.innerHTML = '';
+            photosListDiv.innerHTML = `
+                <div style="margin-bottom: 15px; padding: 10px; background: #e9ecef; border-radius: 5px;">
+                    <strong>Изменение порядка фотографий:</strong>
+                    <div style="margin-top: 10px;">
+                        <button class="admin-btn" onclick="moveSelectedPhoto(${paintingNumber}, 'up')" style="margin-right: 10px; padding: 5px 15px; font-size: 12px;">↑ Вверх</button>
+                        <button class="admin-btn" onclick="moveSelectedPhoto(${paintingNumber}, 'down')" style="padding: 5px 15px; font-size: 12px;">↓ Вниз</button>
+                    </div>
+                </div>
+            `;
             
             painting.images.forEach((imageUrl, index) => {
                 const photoDiv = document.createElement('div');
                 photoDiv.style.cssText = 'display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;';
                 
                 photoDiv.innerHTML = `
+                    <input type="radio" name="photo-${paintingNumber}" value="${index}" style="margin-right: 15px;">
                     <img src="${imageUrl}" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 4px;">
                     <div style="flex: 1;">
                         <div><strong>Фотография №${index + 1}</strong></div>
@@ -1472,8 +1514,57 @@
                 // Обновляем конфигурацию
                 generatePhotosConfig();
                 
+                // Генерируем конфигурацию порядка картин
+                generatePaintingsOrderConfig();
+                
                 alert('Фотография удалена!');
             }
+        }
+
+        // Переместить выбранную фотографию
+        function moveSelectedPhoto(paintingNumber, direction) {
+            const paintingIndex = paintingNumber - 1;
+            const painting = galleryItems[paintingIndex];
+            
+            if (!painting || !painting.images) {
+                alert('Картина не найдена');
+                return;
+            }
+            
+            // Получаем выбранную фотографию
+            const selectedRadio = document.querySelector(`input[name="photo-${paintingNumber}"]:checked`);
+            if (!selectedRadio) {
+                alert('Выберите фотографию для перемещения');
+                return;
+            }
+            
+            const selectedIndex = parseInt(selectedRadio.value);
+            const newIndex = direction === 'up' ? selectedIndex - 1 : selectedIndex + 1;
+            
+            // Проверяем границы
+            if (newIndex < 0 || newIndex >= painting.images.length) {
+                alert(`Нельзя переместить фотографию ${direction === 'up' ? 'вверх' : 'вниз'}`);
+                return;
+            }
+            
+            // Перемещаем фотографию
+            const imageToMove = painting.images[selectedIndex];
+            painting.images.splice(selectedIndex, 1);
+            painting.images.splice(newIndex, 0, imageToMove);
+            
+            // Обновляем главное изображение, если переместили первую фотографию
+            if (selectedIndex === 0 || newIndex === 0) {
+                painting.mainImage = painting.images[0];
+            }
+            
+            // Сохраняем изменения
+            saveGalleryData();
+            
+            // Обновляем галерею
+            initGallery();
+            
+            // Перезагружаем список фотографий
+            loadPhotosList(paintingNumber);
         }
 
         // Удалить картину
@@ -1490,6 +1581,7 @@
                 saveGalleryData();
                 initGallery();
                 generatePhotosConfig();
+                generatePaintingsOrderConfig();
                 alert('Картина удалена!');
             }
         }
@@ -1569,6 +1661,9 @@
                     
                     // Обновляем конфигурацию
                     generatePhotosConfig();
+                    
+                    // Генерируем конфигурацию порядка картин
+                    generatePaintingsOrderConfig();
                     
                     statusDiv.innerHTML = `<div class="success">✅ Загружено ${successCount} из ${files.length} фотографий для картины №${paintingNumber}. Теперь у картины ${galleryItems[paintingIndex].images.length} фотографий.</div>`;
                 } else {
@@ -1867,6 +1962,99 @@
             
             // Генерируем конфигурацию фотографий
             generatePhotosConfig();
+            
+            // Генерируем конфигурацию порядка картин
+            generatePaintingsOrderConfig();
+        }
+
+        // Генерировать конфигурацию порядка картин
+        function generatePaintingsOrderConfig() {
+            const container = document.getElementById('paintings-order-config');
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Фильтруем картины, у которых есть фотографии
+            const validPaintings = galleryItems.filter(item => item && item.images && item.images.length > 0);
+            
+            if (validPaintings.length === 0) {
+                container.innerHTML = '<p>Нет картин с фотографиями для изменения порядка</p>';
+                return;
+            }
+            
+            validPaintings.forEach((painting, index) => {
+                const paintingDiv = document.createElement('div');
+                paintingDiv.style.cssText = 'display: flex; align-items: center; margin-bottom: 10px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background: white;';
+                
+                paintingDiv.innerHTML = `
+                    <input type="radio" name="painting-order" value="${galleryItems.indexOf(painting)}" style="margin-right: 15px;">
+                    <img src="${painting.mainImage}" style="width: 60px; height: 60px; object-fit: cover; margin-right: 15px; border-radius: 4px;">
+                    <div style="flex: 1;">
+                        <div><strong>${painting.title}</strong></div>
+                        <div style="font-size: 12px; color: #666; margin-top: 5px;">Фотографий: ${painting.images.length} | Позиция: ${index + 1}</div>
+                    </div>
+                `;
+                
+                container.appendChild(paintingDiv);
+            });
+        }
+
+        // Переместить картину в списке (новая функция для кнопок у каждой картины)
+        function movePaintingInList(paintingIndex, direction) {
+            const newIndex = direction === 'up' ? paintingIndex - 1 : paintingIndex + 1;
+            
+            // Проверяем границы
+            if (newIndex < 0 || newIndex >= galleryItems.length) {
+                return; // Не показываем ошибку, просто ничего не делаем
+            }
+            
+            // Перемещаем картину
+            const paintingToMove = galleryItems[paintingIndex];
+            galleryItems.splice(paintingIndex, 1);
+            galleryItems.splice(newIndex, 0, paintingToMove);
+            
+            // Сохраняем изменения
+            saveGalleryData();
+            
+            // Обновляем галерею
+            initGallery();
+            
+            // Перезагружаем конфигурацию
+            generatePhotosConfig();
+            generatePaintingsOrderConfig();
+        }
+
+        // Переместить выбранную картину (старая функция для радиокнопок)
+        function moveSelectedPainting(direction) {
+            // Получаем выбранную картину
+            const selectedRadio = document.querySelector('input[name="painting-order"]:checked');
+            if (!selectedRadio) {
+                alert('Выберите картину для перемещения');
+                return;
+            }
+            
+            const selectedIndex = parseInt(selectedRadio.value);
+            const newIndex = direction === 'up' ? selectedIndex - 1 : selectedIndex + 1;
+            
+            // Проверяем границы
+            if (newIndex < 0 || newIndex >= galleryItems.length) {
+                alert(`Нельзя переместить картину ${direction === 'up' ? 'вверх' : 'вниз'}`);
+                return;
+            }
+            
+            // Перемещаем картину
+            const paintingToMove = galleryItems[selectedIndex];
+            galleryItems.splice(selectedIndex, 1);
+            galleryItems.splice(newIndex, 0, paintingToMove);
+            
+            // Сохраняем изменения
+            saveGalleryData();
+            
+            // Обновляем галерею
+            initGallery();
+            
+            // Перезагружаем конфигурацию порядка
+            generatePaintingsOrderConfig();
         }
 
         // ===== ОСНОВНАЯ ФУНКЦИОНАЛЬНОСТЬ САЙТА =====

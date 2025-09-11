@@ -936,6 +936,17 @@
         </div>
 
         <div class="admin-section">
+            <h2>Очистка данных</h2>
+            <div class="admin-form">
+                <p style="color: #dc3545; margin-bottom: 15px;">
+                    <strong>⚠️ ВНИМАНИЕ:</strong> Эта операция удалит ВСЕ данные галереи навсегда!
+                </p>
+                <button class="admin-btn" id="clear-all-data" style="background: #dc3545;">🗑️ Очистить все данные галереи</button>
+                <div id="clear-status" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <div class="admin-section">
             <h2>Управление фотографиями картин</h2>
             <div id="paintings-photos-config">
                 <!-- Конфигурация будет генерироваться здесь -->
@@ -1969,6 +1980,82 @@
             return null;
         }
 
+        // Очистить все данные галереи
+        async function clearAllGalleryData() {
+            const statusDiv = document.getElementById('clear-status');
+            const clearBtn = document.getElementById('clear-all-data');
+            
+            if (!confirm('Вы уверены, что хотите удалить ВСЕ данные галереи? Это действие нельзя отменить!')) {
+                return;
+            }
+            
+            if (!confirm('Последнее предупреждение! Все картины, фотографии и настройки будут удалены навсегда!')) {
+                return;
+            }
+            
+            clearBtn.disabled = true;
+            statusDiv.innerHTML = '<div class="warning">Очищаем данные...</div>';
+            
+            try {
+                // Очищаем массив картин
+                galleryItems = [];
+                
+                // Очищаем localStorage
+                localStorage.removeItem('janart_gallery_data');
+                localStorage.removeItem('numberOfPaintings');
+                localStorage.removeItem('photosConfig');
+                
+                // Очищаем данные в GitHub
+                if (GITHUB_CONFIG.token) {
+                    await clearGitHubData();
+                }
+                
+                // Обновляем интерфейс
+                initGallery();
+                generatePhotosConfig();
+                generatePaintingsOrderConfig();
+                
+                statusDiv.innerHTML = '<div class="success">✅ Все данные галереи успешно очищены!</div>';
+                
+                // Сбрасываем количество картин
+                document.getElementById('paintings-count').value = '3';
+                numberOfPaintings = 3;
+                
+            } catch (error) {
+                console.error('Ошибка очистки данных:', error);
+                statusDiv.innerHTML = '<div class="error">❌ Ошибка при очистке данных: ' + error.message + '</div>';
+            } finally {
+                clearBtn.disabled = false;
+            }
+        }
+
+        // Очистить данные в GitHub
+        async function clearGitHubData() {
+            try {
+                // Удаляем файл gallery-data.json
+                const filePath = 'gallery-data.json';
+                const existingFile = await getFileInfo(filePath);
+                
+                if (existingFile && existingFile.sha) {
+                    await fetch(`https://api.github.com/repos/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/contents/${filePath}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `token ${GITHUB_CONFIG.token}`,
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            message: 'Clear all gallery data',
+                            sha: existingFile.sha
+                        })
+                    });
+                }
+                
+                console.log('Данные в GitHub очищены');
+            } catch (error) {
+                console.error('Ошибка очистки данных в GitHub:', error);
+            }
+        }
+
         // Инициализация админ-панели
         function initAdminPanel() {
             // Проверяем URL при загрузке
@@ -2010,6 +2097,12 @@
                 savePhotosConfigBtn.addEventListener('click', function() {
                     alert('Конфигурация фотографий сохранена!');
                 });
+            }
+            
+            // Настройка кнопки очистки всех данных
+            const clearAllDataBtn = document.getElementById('clear-all-data');
+            if (clearAllDataBtn) {
+                clearAllDataBtn.addEventListener('click', clearAllGalleryData);
             }
             
             // Настройка предпросмотра изображений

@@ -1,25 +1,6 @@
 {
   "paintings": [
     {
-      "id": 5,
-      "title": "Без названия, №5",
-      "size": "48\" x 36\"",
-      "price": "2 160 ₽",
-      "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/2.jpg",
-      "images": [
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/2.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/3.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/4.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/5.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/7.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/8.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/9.jpg",
-        "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/5/10.jpg"
-      ],
-      "soldOut": false,
-      "description": "Акрил, мраморная пыль и пигмент на холсте, 2024"
-    },
-    {
       "id": 3,
       "title": "Без названия, №3",
       "size": "48\" x 36\"",
@@ -75,6 +56,6 @@
       "description": "Акрил, мраморная пыль и пигмент на холсте, 2024"
     }
   ],
-  "lastUpdated": "2025-09-11T17:58:25.508Z",
+  "lastUpdated": "2025-09-11T17:58:38.994Z",
   "version": "1.0"
 }

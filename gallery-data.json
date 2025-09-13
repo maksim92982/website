@@ -23,7 +23,7 @@
     },
     {
       "id": 2,
-      "title": "лев",
+      "title": "лев121212",
       "size": "50 x 70 см",
       "price": "2 650 $",
       "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
@@ -37,11 +37,10 @@
       "overlay": {
         "type": "rounded",
         "text": "скидка",
-        "color": "#977220"
-      },
-      "hidden": true
+        "color": "#8a2097"
+      }
     }
   ],
-  "lastUpdated": "2025-09-13T14:43:56.452Z",
+  "lastUpdated": "2025-09-13T14:45:35.389Z",
   "version": "1.0"
 }

@@ -1144,7 +1144,7 @@
         <div class="github-config collapsible collapsed">
             <div class="github-config-header" id="github-config-header">
                 <h3>Настройки GitHub</h3>
-                <span class="collapse-arrow" id="github-collapse-arrow">▶</span>
+                <span class="collapse-arrow" id="github-collapse-arrow">▼</span>
             </div>
             <div class="github-config-content" id="github-config-content">
                 <div class="admin-form">
@@ -1162,7 +1162,7 @@
         <div class="admin-section collapsible collapsed">
             <div class="admin-section-header" id="gallery-settings-header">
                 <h2>Настройки галереи</h2>
-                <span class="collapse-arrow" id="gallery-settings-arrow">▶</span>
+                <span class="collapse-arrow" id="gallery-settings-arrow">▼</span>
             </div>
             <div class="admin-section-content" id="gallery-settings-content">
                 <div class="admin-form">
@@ -1176,7 +1176,7 @@
         <div class="admin-section collapsible collapsed">
             <div class="admin-section-header" id="photos-management-header">
                 <h2>Управление фотографиями картин</h2>
-                <span class="collapse-arrow" id="photos-management-arrow">▶</span>
+                <span class="collapse-arrow" id="photos-management-arrow">▼</span>
             </div>
             <div class="admin-section-content" id="photos-management-content">
                 <div id="paintings-photos-config">
@@ -1189,7 +1189,7 @@
         <div class="admin-section collapsible collapsed">
             <div class="admin-section-header" id="order-management-header">
                 <h2>Изменение порядка картин в галерее</h2>
-                <span class="collapse-arrow" id="order-management-arrow">▶</span>
+                <span class="collapse-arrow" id="order-management-arrow">▼</span>
             </div>
             <div class="admin-section-content" id="order-management-content">
                 <div style="margin-bottom: 15px; padding: 10px; background: #e9ecef; border-radius: 5px;">
@@ -1209,7 +1209,7 @@
         <div class="admin-section collapsible collapsed">
             <div class="admin-section-header" id="paintings-management-header">
                 <h2>Управление существующими картинами</h2>
-                <span class="collapse-arrow" id="paintings-management-arrow">▶</span>
+                <span class="collapse-arrow" id="paintings-management-arrow">▼</span>
             </div>
             <div class="admin-section-content" id="paintings-management-content">
                 <div id="paintings-list">
@@ -2212,12 +2212,12 @@
                             // Разворачиваем
                             section.classList.remove('collapsed');
                             content.style.maxHeight = content.scrollHeight + 'px';
-                            arrow.textContent = '▼';
+                            arrow.textContent = '▲';
                         } else {
                             // Сворачиваем
                             section.classList.add('collapsed');
                             content.style.maxHeight = '0px';
-                            arrow.textContent = '▶';
+                            arrow.textContent = '▼';
                         }
                     });
                 }
@@ -2248,12 +2248,12 @@
                         // Разворачиваем
                         githubConfig.classList.remove('collapsed');
                         githubConfigContent.style.maxHeight = githubConfigContent.scrollHeight + 'px';
-                        githubCollapseArrow.textContent = '▼';
+                        githubCollapseArrow.textContent = '▲';
                     } else {
                         // Сворачиваем
                         githubConfig.classList.add('collapsed');
                         githubConfigContent.style.maxHeight = '0px';
-                        githubCollapseArrow.textContent = '▶';
+                        githubCollapseArrow.textContent = '▼';
                     }
                 });
             }

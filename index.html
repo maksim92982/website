@@ -1099,26 +1099,6 @@
             </div>
         </div>
 
-        <div class="admin-section">
-            <h2>Добавить новую картину</h2>
-            <div class="admin-form">
-                <input type="text" id="new-painting-title" class="admin-input" placeholder="Название картины">
-                <input type="text" id="new-painting-size" class="admin-input" placeholder="Размер (например: 36x48)">
-                <input type="text" id="new-painting-price" class="admin-input" placeholder="Цена">
-                <textarea id="new-painting-description" class="admin-input" placeholder="Описание" rows="3"></textarea>
-                
-                <label>Загрузите фотографии для этой картины (первая будет основной):</label>
-                <input type="file" id="painting-images" class="admin-input" multiple accept="image/*,.heic,.heif">
-                
-                <div class="image-preview" id="image-preview"></div>
-                <div class="progress-bar" id="upload-progress" style="display: none;">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
-                </div>
-                <div id="upload-status" class="upload-status"></div>
-                
-                <button class="admin-btn" id="add-painting">Добавить картину в GitHub</button>
-            </div>
-        </div>
 
         <div class="admin-section">
             <h2>Управление существующими картинами</h2>
@@ -1882,156 +1862,7 @@
             }
         }
 
-        // Добавить новую картину с загрузкой в GitHub
-        async function addNewPainting() {
-            const title = document.getElementById('new-painting-title').value;
-            const size = document.getElementById('new-painting-size').value;
-            const price = document.getElementById('new-painting-price').value;
-            const description = document.getElementById('new-painting-description').value;
-            const imageInput = document.getElementById('painting-images');
-            const statusDiv = document.getElementById('upload-status');
-            const addButton = document.getElementById('add-painting');
-            const progressBar = document.getElementById('upload-progress');
-            
-            // Проверяем настройки GitHub
-            if (!GITHUB_CONFIG.token || !GITHUB_CONFIG.owner || !GITHUB_CONFIG.repo) {
-                statusDiv.textContent = 'Сначала настройте подключение к GitHub';
-                statusDiv.className = 'upload-status error';
-                return;
-            }
-            
-            // Проверяем заполненность полей
-            if (!title || !size || !price || !description) {
-                statusDiv.textContent = 'Заполните все поля';
-                statusDiv.className = 'upload-status error';
-                return;
-            }
-            
-            if (!imageInput.files || imageInput.files.length === 0) {
-                statusDiv.textContent = 'Добавьте хотя бы одно изображение';
-                statusDiv.className = 'upload-status error';
-                return;
-            }
-            
-            // Блокируем кнопку во время загрузки
-            addButton.disabled = true;
-            statusDiv.textContent = 'Начинаем загрузку...';
-            statusDiv.className = 'upload-status warning';
-            progressBar.style.display = 'block';
-            
-            try {
-                // Генерируем ID для новой картины
-                const paintingId = Date.now(); // Используем timestamp для уникальности
-                const imageUrls = [];
-                
-                // Загружаем каждое изображение
-                let successCount = 0;
-                for (let i = 0; i < imageInput.files.length; i++) {
-                    const file = imageInput.files[i];
-                    
-                    try {
-                        // Обновляем прогресс
-                        const progress = Math.round((i / imageInput.files.length) * 100);
-                        document.getElementById('progress-fill').style.width = `${progress}%`;
-                        statusDiv.textContent = `Загружаем изображение ${i + 1} из ${imageInput.files.length}`;
-                        
-                        // Загружаем изображение в GitHub
-                        const imageUrl = await uploadImageToGitHub(file, paintingId, i + 1);
-                        imageUrls.push(imageUrl);
-                        successCount++;
-                    } catch (error) {
-                        console.error(`Ошибка загрузки файла ${file.name}:`, error);
-                        // Продолжаем загрузку других файлов
-                    }
-                }
-                
-                if (successCount === 0) {
-                    throw new Error('Не удалось загрузить ни одного изображения');
-                }
-                
-                // Полный прогресс
-                document.getElementById('progress-fill').style.width = '100%';
-                
-                // Создаем новый элемент галереи
-                const newItem = {
-                    id: paintingId,
-                    title: title,
-                    size: size,
-                    price: price,
-                    mainImage: imageUrls[0],
-                    images: imageUrls,
-                    soldOut: false,
-                    description: description
-                };
-                
-                // Добавляем в массив
-                galleryItems.push(newItem);
-                
-                // Сохраняем в localStorage
-                saveGalleryData();
-                
-                // Обновляем галерею
-                initGallery();
-                
-                // Очищаем форму
-                document.getElementById('new-painting-title').value = '';
-                document.getElementById('new-painting-size').value = '';
-                document.getElementById('new-painting-price').value = '';
-                document.getElementById('new-painting-description').value = '';
-                document.getElementById('image-preview').innerHTML = '';
-                imageInput.value = '';
-                progressBar.style.display = 'none';
-                
-                // Показываем сообщение об успехе
-                statusDiv.textContent = `✅ Картина успешно добавлена! Загружено ${successCount} из ${imageInput.files.length} изображений в GitHub.`;
-                statusDiv.className = 'upload-status success';
-                
-                // Обновляем список картин
-                loadPaintingsList();
-                
-            } catch (error) {
-                console.error('Ошибка добавления картины:', error);
-                statusDiv.textContent = `❌ Ошибка: ${error.message}`;
-                statusDiv.className = 'upload-status error';
-            } finally {
-                // Разблокируем кнопку
-                addButton.disabled = false;
-            }
-        }
 
-        // Предпросмотр изображений перед загрузкой
-        function setupImagePreview() {
-            const imageInput = document.getElementById('painting-images');
-            const previewContainer = document.getElementById('image-preview');
-            
-            if (imageInput && previewContainer) {
-                imageInput.addEventListener('change', function() {
-                    previewContainer.innerHTML = '';
-                    const statusDiv = document.getElementById('upload-status');
-                    statusDiv.className = 'upload-status';
-                    statusDiv.textContent = '';
-                    
-                    if (this.files && this.files.length > 0) {
-                        for (let i = 0; i < this.files.length; i++) {
-                            const file = this.files[i];
-                            const reader = new FileReader();
-                            
-                            reader.onload = function(e) {
-                                const img = document.createElement('img');
-                                img.src = e.target.result;
-                                img.className = 'preview-img';
-                                previewContainer.appendChild(img);
-                            }
-                            
-                            reader.readAsDataURL(file);
-                        }
-                        
-                        statusDiv.textContent = `Выбрано ${this.files.length} изображений`;
-                        statusDiv.className = 'upload-status success';
-                    }
-                });
-            }
-        }
 
         // Загрузить список картин для управления
         function loadPaintingsList() {
@@ -2269,14 +2100,7 @@
             }
             
             
-            // Настройка предпросмотра изображений
-            setupImagePreview();
             
-            // Настройка кнопки добавления картины
-            const addPaintingBtn = document.getElementById('add-painting');
-            if (addPaintingBtn) {
-                addPaintingBtn.addEventListener('click', addNewPainting);
-            }
             
             // Загружаем сохраненные данные при инициализации
             const savedData = loadGalleryData();

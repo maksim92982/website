@@ -1246,23 +1246,23 @@
             <h2>Редактирование описания картины</h2>
             
             <div class="form-group">
-                <label for="painting-title">Название картины:</label>
-                <input type="text" id="painting-title" placeholder="Введите название картины">
+                <label for="painting-title-modal">Название картины:</label>
+                <input type="text" id="painting-title-modal" placeholder="Введите название картины">
             </div>
             
             <div class="form-group">
-                <label for="painting-price">Цена:</label>
-                <input type="text" id="painting-price" placeholder="Введите цену">
+                <label for="painting-price-modal">Цена:</label>
+                <input type="text" id="painting-price-modal" placeholder="Введите цену">
             </div>
             
             <div class="form-group">
-                <label for="painting-size">Размер:</label>
-                <input type="text" id="painting-size" placeholder="Введите размер">
+                <label for="painting-size-modal">Размер:</label>
+                <input type="text" id="painting-size-modal" placeholder="Введите размер">
             </div>
             
             <div class="form-group">
-                <label for="painting-description">Описание:</label>
-                <textarea id="painting-description" rows="4" placeholder="Введите описание картины"></textarea>
+                <label for="painting-description-modal">Описание:</label>
+                <textarea id="painting-description-modal" rows="4" placeholder="Введите описание картины"></textarea>
             </div>
             
             <div class="form-group">
@@ -2743,10 +2743,10 @@
                 
                 if (painting) {
                     console.log('Заполняем форму данными картины:', painting);
-                    const titleField = document.getElementById('painting-title');
-                    const priceField = document.getElementById('painting-price');
-                    const sizeField = document.getElementById('painting-size');
-                    const descriptionField = document.getElementById('painting-description');
+                    const titleField = document.getElementById('painting-title-modal');
+                    const priceField = document.getElementById('painting-price-modal');
+                    const sizeField = document.getElementById('painting-size-modal');
+                    const descriptionField = document.getElementById('painting-description-modal');
                     
                     if (titleField) titleField.value = painting.title || '';
                     if (priceField) priceField.value = painting.price || '';
@@ -2804,10 +2804,10 @@
                         console.log('Картина до изменения:', painting);
                         
                         // Обновляем данные картины
-                        const titleElement = document.getElementById('painting-title');
-                        const priceElement = document.getElementById('painting-price');
-                        const sizeElement = document.getElementById('painting-size');
-                        const descriptionElement = document.getElementById('painting-description');
+                        const titleElement = document.getElementById('painting-title-modal');
+                        const priceElement = document.getElementById('painting-price-modal');
+                        const sizeElement = document.getElementById('painting-size-modal');
+                        const descriptionElement = document.getElementById('painting-description-modal');
                         
                         console.log('Элементы формы найдены:');
                         console.log('  titleElement:', titleElement);
@@ -2825,6 +2825,13 @@
                         console.log('  price:', newPrice);
                         console.log('  size:', newSize);
                         console.log('  description:', newDescription);
+                        
+                        // Дополнительная проверка - читаем значения напрямую из элементов
+                        console.log('Прямое чтение из элементов:');
+                        console.log('  titleElement.value:', titleElement ? titleElement.value : 'не найдено');
+                        console.log('  priceElement.value:', priceElement ? priceElement.value : 'не найдено');
+                        console.log('  sizeElement.value:', sizeElement ? sizeElement.value : 'не найдено');
+                        console.log('  descriptionElement.value:', descriptionElement ? descriptionElement.value : 'не найдено');
                         
                         painting.title = newTitle;
                         painting.price = newPrice;

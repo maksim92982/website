@@ -23,9 +23,9 @@
     },
     {
       "id": 2,
-      "title": "ау32к2323к",
-      "size": "50 х 70",
-      "price": "11000",
+      "title": "тигр",
+      "size": "70х60",
+      "price": "33 450 ₽",
       "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
       "images": [
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
@@ -33,14 +33,14 @@
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/3.jpg"
       ],
       "soldOut": false,
-      "description": "тестовое описание",
+      "description": "Акрил, мраморная пыль и пигмент на холсте, 2021",
       "overlay": {
-        "type": "none",
-        "text": "12121",
-        "color": "#ff6b6b"
+        "type": "rounded",
+        "text": "скидка",
+        "color": "#977220"
       }
     }
   ],
-  "lastUpdated": "2025-09-13T12:26:50.887Z",
+  "lastUpdated": "2025-09-13T12:31:40.989Z",
   "version": "1.0"
 }

@@ -2773,17 +2773,38 @@
                         console.log('Картина до изменения:', painting);
                         
                         // Обновляем данные картины
-                        painting.title = document.getElementById('painting-title').value;
-                        painting.price = document.getElementById('painting-price').value;
-                        painting.size = document.getElementById('painting-size').value;
-                        painting.description = document.getElementById('painting-description').value;
+                        const newTitle = document.getElementById('painting-title').value;
+                        const newPrice = document.getElementById('painting-price').value;
+                        const newSize = document.getElementById('painting-size').value;
+                        const newDescription = document.getElementById('painting-description').value;
+                        
+                        console.log('Новые значения из формы:', {
+                            title: newTitle,
+                            price: newPrice,
+                            size: newSize,
+                            description: newDescription
+                        });
+                        
+                        painting.title = newTitle;
+                        painting.price = newPrice;
+                        painting.size = newSize;
+                        painting.description = newDescription;
                         
                         // Обновляем данные таблички
                         const selectedShape = document.querySelector('input[name="shape-type"]:checked').value;
+                        const overlayText = document.getElementById('overlay-text').value;
+                        const overlayColor = document.getElementById('overlay-color').value;
+                        
+                        console.log('Новые значения таблички:', {
+                            shape: selectedShape,
+                            text: overlayText,
+                            color: overlayColor
+                        });
+                        
                         painting.overlay = {
                             type: selectedShape,
-                            text: document.getElementById('overlay-text').value,
-                            color: document.getElementById('overlay-color').value
+                            text: overlayText,
+                            color: overlayColor
                         };
                         
                         console.log('Картина после изменения:', painting);

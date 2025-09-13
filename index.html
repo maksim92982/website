@@ -1273,15 +1273,8 @@
                 <label for="overlay-color">Цвет таблички:</label>
                 <div class="color-picker">
                     <input type="color" id="overlay-color" value="#ff6b6b">
-                    <div class="color-presets">
-                        <div class="color-preset" style="background: #ff6b6b;" data-color="#ff6b6b"></div>
-                        <div class="color-preset" style="background: #4ecdc4;" data-color="#4ecdc4"></div>
-                        <div class="color-preset" style="background: #45b7d1;" data-color="#45b7d1"></div>
-                        <div class="color-preset" style="background: #96ceb4;" data-color="#96ceb4"></div>
-                        <div class="color-preset" style="background: #feca57;" data-color="#feca57"></div>
-                        <div class="color-preset" style="background: #ff9ff3;" data-color="#ff9ff3"></div>
-                        <div class="color-preset" style="background: #54a0ff;" data-color="#54a0ff"></div>
-                        <div class="color-preset" style="background: #5f27cd;" data-color="#5f27cd"></div>
+                    <div class="color-presets" id="color-presets">
+                        <!-- Динамически генерируемые цветовые пресеты -->
                     </div>
                 </div>
             </div>
@@ -2066,6 +2059,10 @@
                         <p>Количество фото: ${item.images.length}</p>
                         <div style="margin-top: 10px;">
                             <button class="admin-btn" id="description-btn-list-${index}" style="background: #6f42c1; margin-right: 10px;">Описание картины</button>
+                            <label style="margin-right: 10px; display: inline-flex; align-items: center; cursor: pointer;">
+                                <input type="checkbox" id="hide-painting-${index}" ${item.hidden ? 'checked' : ''} style="margin-right: 5px;">
+                                Скрыть из галереи
+                            </label>
                             <button class="delete-btn" data-index="${index}">Удалить</button>
                         </div>
                     `;
@@ -2092,6 +2089,28 @@
                             openDescriptionModal(index);
                         } else {
                             console.error('Функция openDescriptionModal не найдена');
+                        }
+                    });
+                });
+                
+                // Добавляем обработчики для checkbox'ов скрытия
+                document.querySelectorAll('[id^="hide-painting-"]').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const index = parseInt(this.id.replace('hide-painting-', ''));
+                        const isHidden = this.checked;
+                        
+                        // Обновляем свойство hidden в данных картины
+                        if (galleryItems[index]) {
+                            galleryItems[index].hidden = isHidden;
+                            
+                            // Сохраняем изменения
+                            saveGalleryData();
+                            saveGalleryDataToGitHub();
+                            
+                            // Обновляем галерею пользователя
+                            initGallery();
+                            
+                            console.log(`Картина ${index} ${isHidden ? 'скрыта' : 'показана'} из галереи`);
                         }
                     });
                 });
@@ -2499,8 +2518,13 @@
             // Очищаем контейнер перед добавлением новых элементов
             galleryContainer.innerHTML = '';
             
-            // Фильтруем картины, у которых есть хотя бы одно изображение
-            const validGalleryItems = galleryItems.filter(item => item && item.images && item.images.length > 0);
+            // Фильтруем картины, у которых есть хотя бы одно изображение и которые не скрыты
+            const validGalleryItems = galleryItems.filter(item => 
+                item && 
+                item.images && 
+                item.images.length > 0 && 
+                !item.hidden
+            );
             
             if (validGalleryItems.length === 0) {
                 galleryContainer.innerHTML = '<div class="gallery-empty">Галерея пуста. Добавьте картины в админ-панели.</div>';
@@ -2702,6 +2726,53 @@
             
             let currentPaintingIndex = null;
             
+            // Система управления цветовой историей
+            function loadColorHistory() {
+                const saved = localStorage.getItem('colorHistory');
+                return saved ? JSON.parse(saved) : ['#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#feca57', '#ff9ff3', '#54a0ff', '#5f27cd'];
+            }
+            
+            function saveColorHistory(colors) {
+                localStorage.setItem('colorHistory', JSON.stringify(colors));
+            }
+            
+            function addColorToHistory(color) {
+                let colors = loadColorHistory();
+                // Удаляем цвет, если он уже есть
+                colors = colors.filter(c => c !== color);
+                // Добавляем в начало
+                colors.unshift(color);
+                // Оставляем только 8 цветов
+                colors = colors.slice(0, 8);
+                saveColorHistory(colors);
+                updateColorPresets();
+            }
+            
+            function updateColorPresets() {
+                const colors = loadColorHistory();
+                const presetsContainer = document.getElementById('color-presets');
+                presetsContainer.innerHTML = '';
+                
+                colors.forEach(color => {
+                    const preset = document.createElement('div');
+                    preset.className = 'color-preset';
+                    preset.style.background = color;
+                    preset.setAttribute('data-color', color);
+                    preset.addEventListener('click', function() {
+                        const colorInput = document.getElementById('overlay-color');
+                        colorInput.value = color;
+                        // Убираем активный класс с всех пресетов
+                        document.querySelectorAll('.color-preset').forEach(p => p.classList.remove('active'));
+                        // Добавляем активный класс к выбранному
+                        this.classList.add('active');
+                    });
+                    presetsContainer.appendChild(preset);
+                });
+            }
+            
+            // Инициализируем цветовые пресеты
+            updateColorPresets();
+            
             // Обработчик изменения формы таблички
             shapeRadios.forEach(radio => {
                 radio.addEventListener('change', function() {
@@ -2713,23 +2784,14 @@
                 });
             });
             
-            // Обработчики для цветовых пресетов
-            colorPresets.forEach(preset => {
-                preset.addEventListener('click', function() {
-                    const color = this.getAttribute('data-color');
-                    colorInput.value = color;
-                    
-                    // Убираем активный класс с всех пресетов
-                    colorPresets.forEach(p => p.classList.remove('active'));
-                    // Добавляем активный класс к выбранному
-                    this.classList.add('active');
-                });
-            });
+            // Обработчики для цветовых пресетов теперь в updateColorPresets()
             
             // Обработчик изменения цвета через input
             colorInput.addEventListener('change', function() {
+                // Добавляем цвет в историю
+                addColorToHistory(this.value);
                 // Убираем активный класс с всех пресетов
-                colorPresets.forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.color-preset').forEach(p => p.classList.remove('active'));
             });
             
             // Функция открытия модального окна

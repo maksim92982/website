@@ -667,7 +667,7 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
-            z-index: 2000;
+            z-index: 4000;
             justify-content: center;
             align-items: center;
         }
@@ -1081,17 +1081,6 @@
                 <label>Количество картин в галерее:</label>
                 <input type="number" id="paintings-count" class="admin-input" min="1" value="3">
                 <button class="admin-btn" id="save-settings">Сохранить настройки</button>
-            </div>
-        </div>
-
-        <div class="admin-section">
-            <h2>Очистка данных</h2>
-            <div class="admin-form">
-                <p style="color: #dc3545; margin-bottom: 15px;">
-                    <strong>⚠️ ВНИМАНИЕ:</strong> Эта операция удалит ВСЕ данные галереи навсегда!
-                </p>
-                <button class="admin-btn" id="clear-all-data" style="background: #dc3545;">🗑️ Очистить все данные галереи</button>
-                <div id="clear-status" style="margin-top: 10px;"></div>
             </div>
         </div>
 
@@ -1603,7 +1592,6 @@
                         <button class="admin-btn" id="delete-painting-btn-${i}" style="background: #dc3545; margin-right: 10px;">Удалить картину</button>
                         <button class="admin-btn" id="move-painting-up-btn-${i}" style="background: #17a2b8; margin-right: 5px; padding: 5px 10px; font-size: 12px;">↑ Вверх</button>
                         <button class="admin-btn" id="move-painting-down-btn-${i}" style="background: #17a2b8; margin-right: 10px; padding: 5px 10px; font-size: 12px;">↓ Вниз</button>
-                        <button class="admin-btn" id="description-btn-${i}" style="background: #6f42c1; margin-right: 10px;">Описание картины</button>
                     </div>
                     <div id="photos-preview-${i}" class="image-preview" style="margin-top: 10px;"></div>
                     <div id="photos-management-${i}" style="display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 5px; border: 1px solid #ccc;">
@@ -1622,7 +1610,6 @@
                 const moveUpBtn = document.getElementById(`move-painting-up-btn-${i}`);
                 const moveDownBtn = document.getElementById(`move-painting-down-btn-${i}`);
                 const deleteBtn = document.getElementById(`delete-painting-btn-${i}`);
-                const descriptionBtn = document.getElementById(`description-btn-${i}`);
                 
                 if (addBtn) {
                     addBtn.addEventListener('click', function() {
@@ -1651,12 +1638,6 @@
                 if (deleteBtn) {
                     deleteBtn.addEventListener('click', function() {
                         deletePainting(i - 1);
-                    });
-                }
-                
-                if (descriptionBtn) {
-                    descriptionBtn.addEventListener('click', function() {
-                        openDescriptionModal(i - 1);
                     });
                 }
             }
@@ -2091,7 +2072,10 @@
                         <h3>${item.title}</h3>
                         <p>Размер: ${item.size} | Цена: ${item.price}</p>
                         <p>Количество фото: ${item.images.length}</p>
-                        <button class="delete-btn" data-index="${index}">Удалить</button>
+                        <div style="margin-top: 10px;">
+                            <button class="admin-btn" id="description-btn-list-${index}" style="background: #6f42c1; margin-right: 10px;">Описание картины</button>
+                            <button class="delete-btn" data-index="${index}">Удалить</button>
+                        </div>
                     `;
                     
                     paintingsList.appendChild(paintingElement);
@@ -2102,6 +2086,21 @@
                     btn.addEventListener('click', function() {
                         const index = parseInt(this.getAttribute('data-index'));
                         deletePainting(index);
+                    });
+                });
+                
+                // Добавляем обработчики для кнопок описания
+                document.querySelectorAll('[id^="description-btn-list-"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        console.log('Кнопка описания нажата в списке картин');
+                        const index = parseInt(this.id.replace('description-btn-list-', ''));
+                        console.log('Индекс картины:', index);
+                        console.log('Функция openDescriptionModal:', typeof window.openDescriptionModal);
+                        if (typeof window.openDescriptionModal === 'function') {
+                            openDescriptionModal(index);
+                        } else {
+                            console.error('Функция openDescriptionModal не найдена');
+                        }
                     });
                 });
             }, 500);
@@ -2208,54 +2207,6 @@
             return null;
         }
 
-        // Очистить все данные галереи
-        async function clearAllGalleryData() {
-            const statusDiv = document.getElementById('clear-status');
-            const clearBtn = document.getElementById('clear-all-data');
-            
-            if (!confirm('Вы уверены, что хотите удалить ВСЕ данные галереи? Это действие нельзя отменить!')) {
-                return;
-            }
-            
-            if (!confirm('Последнее предупреждение! Все картины, фотографии и настройки будут удалены навсегда!')) {
-                return;
-            }
-            
-            clearBtn.disabled = true;
-            statusDiv.innerHTML = '<div class="warning">Очищаем данные...</div>';
-            
-            try {
-                // Очищаем массив картин
-                galleryItems = [];
-                
-                // Очищаем localStorage
-                localStorage.removeItem('janart_gallery_data');
-                localStorage.removeItem('numberOfPaintings');
-                localStorage.removeItem('photosConfig');
-                
-                // Очищаем данные в GitHub
-                if (GITHUB_CONFIG.token) {
-                    await clearGitHubData();
-                }
-                
-                // Обновляем интерфейс
-                initGallery();
-                generatePhotosConfig();
-                generatePaintingsOrderConfig();
-                
-                statusDiv.innerHTML = '<div class="success">✅ Все данные галереи успешно очищены!</div>';
-                
-                // Сбрасываем количество картин
-                document.getElementById('paintings-count').value = '3';
-                numberOfPaintings = 3;
-                
-            } catch (error) {
-                console.error('Ошибка очистки данных:', error);
-                statusDiv.innerHTML = '<div class="error">❌ Ошибка при очистке данных: ' + error.message + '</div>';
-            } finally {
-                clearBtn.disabled = false;
-            }
-        }
 
         // Очистить данные в GitHub
         async function clearGitHubData() {
@@ -2327,11 +2278,6 @@
                 });
             }
             
-            // Настройка кнопки очистки всех данных
-            const clearAllDataBtn = document.getElementById('clear-all-data');
-            if (clearAllDataBtn) {
-                clearAllDataBtn.addEventListener('click', clearAllGalleryData);
-            }
             
             // Настройка предпросмотра изображений
             setupImagePreview();
@@ -2716,10 +2662,18 @@
 
         // Инициализация модального окна редактирования описания картины
         function initDescriptionModal() {
+            console.log('=== Инициализация модального окна описания ===');
             const descriptionModal = document.getElementById('description-modal');
             const closeDescription = document.getElementById('close-description');
             const saveDescription = document.getElementById('save-description');
             const cancelDescription = document.getElementById('cancel-description');
+            
+            console.log('Элементы модального окна:', {
+                descriptionModal,
+                closeDescription,
+                saveDescription,
+                cancelDescription
+            });
             const shapeRadios = document.querySelectorAll('input[name="shape-type"]');
             const overlaySettings = document.getElementById('overlay-settings');
             const colorPresets = document.querySelectorAll('.color-preset');
@@ -2759,8 +2713,12 @@
             
             // Функция открытия модального окна
             window.openDescriptionModal = function(paintingIndex) {
+                console.log('=== openDescriptionModal вызвана ===');
+                console.log('Индекс картины:', paintingIndex);
+                console.log('galleryItems:', galleryItems);
                 currentPaintingIndex = paintingIndex;
                 const painting = galleryItems[paintingIndex];
+                console.log('Картина найдена:', painting);
                 
                 if (painting) {
                     document.getElementById('painting-title').value = painting.title || '';
@@ -2782,9 +2740,14 @@
                     }
                 }
                 
+                console.log('Модальное окно найдено:', descriptionModal);
                 if (descriptionModal) {
                     descriptionModal.classList.add('active');
+                    console.log('Модальное окно активировано');
+                } else {
+                    console.error('Модальное окно не найдено!');
                 }
+                console.log('=== Конец openDescriptionModal ===');
             };
             
             // Обработчики кнопок
@@ -2824,7 +2787,7 @@
                         
                         // Обновляем отображение
                         updateGalleryDisplay();
-                        updateAdminPanel();
+                        loadPaintingsList();
                         
                         descriptionModal.classList.remove('active');
                     }

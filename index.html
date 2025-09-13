@@ -2059,10 +2059,6 @@
                         <p>Количество фото: ${item.images.length}</p>
                         <div style="margin-top: 10px;">
                             <button class="admin-btn" id="description-btn-list-${index}" style="background: #6f42c1; margin-right: 10px;">Описание картины</button>
-                            <label style="margin-right: 10px; display: inline-flex; align-items: center; cursor: pointer;">
-                                <input type="checkbox" id="hide-painting-${index}" ${item.hidden ? 'checked' : ''} style="margin-right: 5px;">
-                                Скрыть из галереи
-                            </label>
                             <button class="delete-btn" data-index="${index}">Удалить</button>
                         </div>
                     `;
@@ -2093,27 +2089,6 @@
                     });
                 });
                 
-                // Добавляем обработчики для checkbox'ов скрытия
-                document.querySelectorAll('[id^="hide-painting-"]').forEach(checkbox => {
-                    checkbox.addEventListener('change', function() {
-                        const index = parseInt(this.id.replace('hide-painting-', ''));
-                        const isHidden = this.checked;
-                        
-                        // Обновляем свойство hidden в данных картины
-                        if (galleryItems[index]) {
-                            galleryItems[index].hidden = isHidden;
-                            
-                            // Сохраняем изменения
-                            saveGalleryData();
-                            saveGalleryDataToGitHub();
-                            
-                            // Обновляем галерею пользователя
-                            initGallery();
-                            
-                            console.log(`Картина ${index} ${isHidden ? 'скрыта' : 'показана'} из галереи`);
-                        }
-                    });
-                });
             }, 500);
         }
 
@@ -2518,13 +2493,8 @@
             // Очищаем контейнер перед добавлением новых элементов
             galleryContainer.innerHTML = '';
             
-            // Фильтруем картины, у которых есть хотя бы одно изображение и которые не скрыты
-            const validGalleryItems = galleryItems.filter(item => 
-                item && 
-                item.images && 
-                item.images.length > 0 && 
-                !item.hidden
-            );
+            // Фильтруем картины, у которых есть хотя бы одно изображение
+            const validGalleryItems = galleryItems.filter(item => item && item.images && item.images.length > 0);
             
             if (validGalleryItems.length === 0) {
                 galleryContainer.innerHTML = '<div class="gallery-empty">Галерея пуста. Добавьте картины в админ-панели.</div>';

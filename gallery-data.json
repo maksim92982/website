@@ -23,7 +23,7 @@
     },
     {
       "id": 2,
-      "title": "тигр",
+      "title": "лев",
       "size": "70х60",
       "price": "33 450 ₽",
       "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
@@ -41,6 +41,6 @@
       }
     }
   ],
-  "lastUpdated": "2025-09-13T12:31:40.989Z",
+  "lastUpdated": "2025-09-13T12:32:55.571Z",
   "version": "1.0"
 }

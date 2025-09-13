@@ -1109,10 +1109,10 @@
         <div class="admin-section">
             <h2>Добавить новую картину</h2>
             <div class="admin-form">
-                <input type="text" id="painting-title" class="admin-input" placeholder="Название картины">
-                <input type="text" id="painting-size" class="admin-input" placeholder="Размер (например: 36x48)">
-                <input type="text" id="painting-price" class="admin-input" placeholder="Цена">
-                <textarea id="painting-description" class="admin-input" placeholder="Описание" rows="3"></textarea>
+                <input type="text" id="new-painting-title" class="admin-input" placeholder="Название картины">
+                <input type="text" id="new-painting-size" class="admin-input" placeholder="Размер (например: 36x48)">
+                <input type="text" id="new-painting-price" class="admin-input" placeholder="Цена">
+                <textarea id="new-painting-description" class="admin-input" placeholder="Описание" rows="3"></textarea>
                 
                 <label>Загрузите фотографии для этой картины (первая будет основной):</label>
                 <input type="file" id="painting-images" class="admin-input" multiple accept="image/*,.heic,.heif">
@@ -1899,10 +1899,10 @@
 
         // Добавить новую картину с загрузкой в GitHub
         async function addNewPainting() {
-            const title = document.getElementById('painting-title').value;
-            const size = document.getElementById('painting-size').value;
-            const price = document.getElementById('painting-price').value;
-            const description = document.getElementById('painting-description').value;
+            const title = document.getElementById('new-painting-title').value;
+            const size = document.getElementById('new-painting-size').value;
+            const price = document.getElementById('new-painting-price').value;
+            const description = document.getElementById('new-painting-description').value;
             const imageInput = document.getElementById('painting-images');
             const statusDiv = document.getElementById('upload-status');
             const addButton = document.getElementById('add-painting');
@@ -1989,10 +1989,10 @@
                 initGallery();
                 
                 // Очищаем форму
-                document.getElementById('painting-title').value = '';
-                document.getElementById('painting-size').value = '';
-                document.getElementById('painting-price').value = '';
-                document.getElementById('painting-description').value = '';
+                document.getElementById('new-painting-title').value = '';
+                document.getElementById('new-painting-size').value = '';
+                document.getElementById('new-painting-price').value = '';
+                document.getElementById('new-painting-description').value = '';
                 document.getElementById('image-preview').innerHTML = '';
                 imageInput.value = '';
                 progressBar.style.display = 'none';

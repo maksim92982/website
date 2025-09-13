@@ -2141,6 +2141,7 @@
                     version: '1.0'
                 };
 
+                console.log('Сохраняем в GitHub galleryData:', galleryData);
                 const content = JSON.stringify(galleryData, null, 2);
                 const encodedContent = btoa(unescape(encodeURIComponent(content)));
                 
@@ -2184,8 +2185,10 @@
                 
                 if (response.ok) {
                     const data = await response.json();
+                    console.log('Данные загружены из GitHub:', data);
                     if (data.paintings && Array.isArray(data.paintings)) {
                         galleryItems = data.paintings;
+                        console.log('galleryItems после загрузки из GitHub:', galleryItems);
                         saveGalleryData(); // Сохраняем в localStorage для быстрого доступа
                         console.log('Данные галереи загружены из GitHub');
                         return true;
@@ -2764,8 +2767,10 @@
             
             if (saveDescription) {
                 saveDescription.addEventListener('click', function() {
+                    console.log('=== Сохранение описания картины ===');
                     if (currentPaintingIndex !== null) {
                         const painting = galleryItems[currentPaintingIndex];
+                        console.log('Картина до изменения:', painting);
                         
                         // Обновляем данные картины
                         painting.title = document.getElementById('painting-title').value;
@@ -2781,14 +2786,25 @@
                             color: document.getElementById('overlay-color').value
                         };
                         
+                        console.log('Картина после изменения:', painting);
+                        
                         // Сохраняем в localStorage
                         localStorage.setItem('galleryItems', JSON.stringify(galleryItems));
+                        console.log('Данные сохранены в localStorage');
+                        
+                        // Сохраняем в GitHub
+                        saveGalleryDataToGitHub().then(() => {
+                            console.log('Данные сохранены в GitHub');
+                        }).catch(error => {
+                            console.error('Ошибка сохранения в GitHub:', error);
+                        });
                         
                         // Обновляем отображение
                         updateGalleryDisplay();
                         loadPaintingsList();
                         
                         descriptionModal.classList.remove('active');
+                        console.log('=== Конец сохранения ===');
                     }
                 });
             }

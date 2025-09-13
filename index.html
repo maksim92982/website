@@ -2509,7 +2509,6 @@
                         <div class="product-price">${item.price}</div>
                         <div class="product-photos-count">Фото: ${item.images.length}</div>
                     </div>
-                    ${item.soldOut ? '<div class="sold-out">Продано</div>' : ''}
                     ${item.overlay && item.overlay.type !== 'none' ? `<div class="painting-overlay ${item.overlay.type}" style="background-color: ${item.overlay.color};">${item.overlay.text}</div>` : ''}
                 `;
                 
@@ -2848,6 +2847,7 @@
                             ${product.images.map((image, index) => `
                                 <div class="product-thumbnail ${index === 0 ? 'active' : ''}" data-image="${image}" data-index="${index}">
                                     <img src="${image}" alt="Миниатюра ${index + 1}">
+                                    ${product.overlay && product.overlay.type !== 'none' ? `<div class="painting-overlay ${product.overlay.type}" style="background-color: ${product.overlay.color};">${product.overlay.text}</div>` : ''}
                                 </div>
                             `).join('')}
                         </div>
@@ -2855,6 +2855,7 @@
                             <img src="${product.images[0]}" alt="${product.title}" id="main-product-image">
                             <button class="nav-arrow prev" id="prev-arrow"></button>
                             <button class="nav-arrow next" id="next-arrow"></button>
+                            ${product.overlay && product.overlay.type !== 'none' ? `<div class="painting-overlay ${product.overlay.type}" style="background-color: ${product.overlay.color};">${product.overlay.text}</div>` : ''}
                         </div>
                     </div>
                     <div class="product-details">
@@ -2865,10 +2866,7 @@
                             <p>${product.description}</p>
                             <p>Картина поставляется без рамы.</p>
                         </div>
-                        ${product.soldOut ? 
-                            '<div class="sold-out">Продано</div>' : 
-                            '<button class="add-to-cart">Добавить в корзину</button>'
-                        }
+                        <button class="add-to-cart">Добавить в корзину</button>
                     </div>
                 </div>
             `;
@@ -2907,6 +2905,19 @@
                     mainImage.style.width = 'auto';
                     mainImage.style.height = 'auto';
                     mainImage.style.objectFit = 'contain';
+                    
+                    // Обновляем табличку при переключении изображений
+                    const overlayContainer = document.querySelector('#product-image-container .painting-overlay');
+                    if (overlayContainer) {
+                        overlayContainer.remove();
+                    }
+                    if (product.overlay && product.overlay.type !== 'none') {
+                        const overlay = document.createElement('div');
+                        overlay.className = `painting-overlay ${product.overlay.type}`;
+                        overlay.style.backgroundColor = product.overlay.color;
+                        overlay.textContent = product.overlay.text;
+                        document.getElementById('product-image-container').appendChild(overlay);
+                    }
                 });
             });
         }
@@ -3024,6 +3035,19 @@
                         block: 'nearest',
                         inline: 'center'
                     });
+                }
+                
+                // Обновляем табличку при переключении изображений
+                const overlayContainer = document.querySelector('#product-image-container .painting-overlay');
+                if (overlayContainer) {
+                    overlayContainer.remove();
+                }
+                if (currentProduct.overlay && currentProduct.overlay.type !== 'none') {
+                    const overlay = document.createElement('div');
+                    overlay.className = `painting-overlay ${currentProduct.overlay.type}`;
+                    overlay.style.backgroundColor = currentProduct.overlay.color;
+                    overlay.textContent = currentProduct.overlay.text;
+                    document.getElementById('product-image-container').appendChild(overlay);
                 }
             }
         }

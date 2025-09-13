@@ -24,8 +24,8 @@
     {
       "id": 2,
       "title": "лев",
-      "size": "70х60",
-      "price": "33 450 ₽",
+      "size": "50 x 70 см",
+      "price": "2 650 $",
       "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
       "images": [
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
@@ -33,7 +33,7 @@
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/3.jpg"
       ],
       "soldOut": false,
-      "description": "Акрил, мраморная пыль и пигмент на холсте, 2021",
+      "description": "Тестовое описание. 2025 ",
       "overlay": {
         "type": "rounded",
         "text": "скидка",
@@ -41,6 +41,6 @@
       }
     }
   ],
-  "lastUpdated": "2025-09-13T12:32:55.571Z",
+  "lastUpdated": "2025-09-13T14:17:49.038Z",
   "version": "1.0"
 }

@@ -2465,6 +2465,9 @@
             initForms();
             initContactsModal();
             
+            // Инициализируем URL-маршрутизацию
+            initURLRouting();
+            
             // Инициализируем админ-панель
             initAdminPanel();
             
@@ -2526,6 +2529,22 @@
         // Обновление отображения галереи
         function updateGalleryDisplay() {
             initGallery();
+        }
+
+        // Инициализация URL-маршрутизации
+        function initURLRouting() {
+            // Обработчик изменения URL (кнопка назад/вперед)
+            window.addEventListener('popstate', function(event) {
+                handleURLChange();
+            });
+            
+            // Обработчик изменения хеша
+            window.addEventListener('hashchange', function(event) {
+                handleURLChange();
+            });
+            
+            // Инициализируем текущую страницу по URL
+            handleURLChange();
         }
 
         // Инициализация навигации
@@ -2723,10 +2742,22 @@
                 console.log('Картина найдена:', painting);
                 
                 if (painting) {
-                    document.getElementById('painting-title').value = painting.title || '';
-                    document.getElementById('painting-price').value = painting.price || '';
-                    document.getElementById('painting-size').value = painting.size || '';
-                    document.getElementById('painting-description').value = painting.description || '';
+                    console.log('Заполняем форму данными картины:', painting);
+                    const titleField = document.getElementById('painting-title');
+                    const priceField = document.getElementById('painting-price');
+                    const sizeField = document.getElementById('painting-size');
+                    const descriptionField = document.getElementById('painting-description');
+                    
+                    if (titleField) titleField.value = painting.title || '';
+                    if (priceField) priceField.value = painting.price || '';
+                    if (sizeField) sizeField.value = painting.size || '';
+                    if (descriptionField) descriptionField.value = painting.description || '';
+                    
+                    console.log('Форма заполнена значениями:');
+                    console.log('  title:', titleField ? titleField.value : 'не найдено');
+                    console.log('  price:', priceField ? priceField.value : 'не найдено');
+                    console.log('  size:', sizeField ? sizeField.value : 'не найдено');
+                    console.log('  description:', descriptionField ? descriptionField.value : 'не найдено');
                     
                     // Устанавливаем значения для таблички
                     const overlayData = painting.overlay || { type: 'none', text: '', color: '#ff6b6b' };
@@ -2884,8 +2915,61 @@
                 targetPage.style.display = 'block';
             }
             
+            // Обновляем URL
+            updateURL(pageId);
+            
             // Всегда прокручиваем наверх
             window.scrollTo(0, 0);
+        }
+        
+        // Обновить URL
+        function updateURL(page) {
+            const baseURL = window.location.origin + window.location.pathname;
+            let newURL = baseURL;
+            
+            switch(page) {
+                case 'gallery':
+                    newURL = baseURL + '#gallery';
+                    break;
+                case 'about':
+                    newURL = baseURL + '#about';
+                    break;
+                case 'contacts':
+                    newURL = baseURL + '#contacts';
+                    break;
+                case 'home':
+                default:
+                    newURL = baseURL;
+                    break;
+            }
+            
+            // Обновляем URL без перезагрузки страницы
+            if (window.location.href !== newURL) {
+                window.history.pushState({page: page}, '', newURL);
+            }
+        }
+        
+        // Обработчик изменения URL
+        function handleURLChange() {
+            const hash = window.location.hash.substring(1);
+            let page = 'home';
+            
+            switch(hash) {
+                case 'gallery':
+                    page = 'gallery';
+                    break;
+                case 'about':
+                    page = 'about';
+                    break;
+                case 'contacts':
+                    page = 'contacts';
+                    break;
+                default:
+                    page = 'home';
+                    break;
+            }
+            
+            showPage(page);
         }
 
         // Показать страницу товара

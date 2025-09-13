@@ -35,12 +35,12 @@
       "soldOut": false,
       "description": "Тестовое описание. 2025 ",
       "overlay": {
-        "type": "rounded",
-        "text": "скидка",
-        "color": "#8a2097"
+        "type": "square",
+        "text": "скидка111",
+        "color": "#202897"
       }
     }
   ],
-  "lastUpdated": "2025-09-13T14:45:35.389Z",
+  "lastUpdated": "2025-09-13T14:45:44.195Z",
   "version": "1.0"
 }

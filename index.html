@@ -658,6 +658,155 @@
             cursor: pointer;
         }
         
+        /* Модальное окно редактирования описания картины */
+        .description-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .description-modal.active {
+            display: flex;
+        }
+        
+        .description-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            text-align: left;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close-description {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 5px;
+        }
+        
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .radio-group input[type="radio"] {
+            margin-right: 5px;
+            width: auto;
+        }
+        
+        .color-picker {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        
+        .color-picker input[type="color"] {
+            width: 50px;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .color-presets {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .color-preset {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border-color 0.2s;
+        }
+        
+        .color-preset:hover,
+        .color-preset.active {
+            border-color: #333;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+        
+        .modal-buttons .admin-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        /* Стили для табличек на картинах */
+        .painting-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+            padding: 8px 12px;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            max-width: 80px;
+            word-wrap: break-word;
+        }
+        
+        .painting-overlay.rounded {
+            border-radius: 15px;
+        }
+        
+        .painting-overlay.square {
+            border-radius: 4px;
+        }
+        
         .contact-item {
             margin: 15px 0;
             padding: 10px;
@@ -1076,7 +1225,7 @@
         <div class="mobile-bio-link" data-page="bio">Об авторе</div>
         <div class="social-links">
             <a href="#" class="mobile-contact-link" id="contacts-link">Контакты</a>
-            <a href="https://www.instagram.com/janart_home" target="_blank">Instagram</a>
+            <a href="https://www.instagram.com/janart_studio/" target="_blank">Instagram</a>
             <a href="https://wa.me/79046006365" target="_blank">WhatsApp</a>
         </div>
     </footer>
@@ -1088,7 +1237,7 @@
             <h2>Контакты</h2>
             <div class="contact-item">
                 <span class="contact-label">Instagram</span>
-                <a href="https://www.instagram.com/janart_home" target="_blank">@janart_home</a>
+                <a href="https://www.instagram.com/janart_studio/" target="_blank">@janart_studio</a>
             </div>
             <div class="contact-item">
                 <span class="contact-label">WhatsApp</span>
@@ -1097,6 +1246,68 @@
             <div class="contact-item">
                 <span class="contact-label">Email</span>
                 <a href="mailto:tatiana.janart@gmail.com">tatiana.janart@gmail.com</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования описания картины -->
+    <div class="description-modal" id="description-modal">
+        <div class="description-content">
+            <div class="close-description" id="close-description">✕</div>
+            <h2>Редактирование описания картины</h2>
+            
+            <div class="form-group">
+                <label for="painting-title">Название картины:</label>
+                <input type="text" id="painting-title" placeholder="Введите название картины">
+            </div>
+            
+            <div class="form-group">
+                <label for="painting-price">Цена:</label>
+                <input type="text" id="painting-price" placeholder="Введите цену">
+            </div>
+            
+            <div class="form-group">
+                <label for="painting-size">Размер:</label>
+                <input type="text" id="painting-size" placeholder="Введите размер">
+            </div>
+            
+            <div class="form-group">
+                <label for="painting-description">Описание:</label>
+                <textarea id="painting-description" rows="4" placeholder="Введите описание картины"></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label>Форма таблички:</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="shape-type" value="none" checked> Нет</label>
+                    <label><input type="radio" name="shape-type" value="rounded"> Скругленный</label>
+                    <label><input type="radio" name="shape-type" value="square"> Квадратный</label>
+                </div>
+            </div>
+            
+            <div class="form-group" id="overlay-settings" style="display: none;">
+                <label for="overlay-text">Текст на табличке:</label>
+                <input type="text" id="overlay-text" placeholder="Введите текст для таблички">
+                
+                <label for="overlay-color">Цвет таблички:</label>
+                <div class="color-picker">
+                    <input type="color" id="overlay-color" value="#ff6b6b">
+                    <div class="color-presets">
+                        <div class="color-preset" style="background: #ff6b6b;" data-color="#ff6b6b"></div>
+                        <div class="color-preset" style="background: #4ecdc4;" data-color="#4ecdc4"></div>
+                        <div class="color-preset" style="background: #45b7d1;" data-color="#45b7d1"></div>
+                        <div class="color-preset" style="background: #96ceb4;" data-color="#96ceb4"></div>
+                        <div class="color-preset" style="background: #feca57;" data-color="#feca57"></div>
+                        <div class="color-preset" style="background: #ff9ff3;" data-color="#ff9ff3"></div>
+                        <div class="color-preset" style="background: #54a0ff;" data-color="#54a0ff"></div>
+                        <div class="color-preset" style="background: #5f27cd;" data-color="#5f27cd"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="admin-btn" id="save-description" style="background: #28a745;">Сохранить</button>
+                <button class="admin-btn" id="cancel-description" style="background: #6c757d;">Отмена</button>
             </div>
         </div>
     </div>
@@ -1347,7 +1558,7 @@
                         price: i === 5 ? "2 160 ₽" : "3 450 ₽",
                         mainImage: '', // Пустое изображение
                         images: [], // Пустой массив изображений
-                        soldOut: i === 1,
+                        soldOut: false,
                         description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
                     };
                     
@@ -1388,9 +1599,10 @@
                     <div style="margin-bottom: 15px;">
                         <button class="admin-btn" id="add-photos-btn-${i}" style="margin-right: 10px;">Добавить фотографии</button>
                         <button class="admin-btn" id="manage-photos-btn-${i}" style="background: #28a745; margin-right: 10px;">Управлять фотографиями</button>
+                        <button class="admin-btn" id="delete-painting-btn-${i}" style="background: #dc3545; margin-right: 10px;">Удалить картину</button>
                         <button class="admin-btn" id="move-painting-up-btn-${i}" style="background: #17a2b8; margin-right: 5px; padding: 5px 10px; font-size: 12px;">↑ Вверх</button>
                         <button class="admin-btn" id="move-painting-down-btn-${i}" style="background: #17a2b8; margin-right: 10px; padding: 5px 10px; font-size: 12px;">↓ Вниз</button>
-                        <button class="admin-btn" id="delete-painting-btn-${i}" style="background: #dc3545;">Удалить картину</button>
+                        <button class="admin-btn" id="description-btn-${i}" style="background: #6f42c1; margin-right: 10px;">Описание картины</button>
                     </div>
                     <div id="photos-preview-${i}" class="image-preview" style="margin-top: 10px;"></div>
                     <div id="photos-management-${i}" style="display: none; margin-top: 15px; padding: 15px; background: white; border-radius: 5px; border: 1px solid #ccc;">
@@ -1409,6 +1621,7 @@
                 const moveUpBtn = document.getElementById(`move-painting-up-btn-${i}`);
                 const moveDownBtn = document.getElementById(`move-painting-down-btn-${i}`);
                 const deleteBtn = document.getElementById(`delete-painting-btn-${i}`);
+                const descriptionBtn = document.getElementById(`description-btn-${i}`);
                 
                 if (addBtn) {
                     addBtn.addEventListener('click', function() {
@@ -1437,6 +1650,12 @@
                 if (deleteBtn) {
                     deleteBtn.addEventListener('click', function() {
                         deletePainting(i - 1);
+                    });
+                }
+                
+                if (descriptionBtn) {
+                    descriptionBtn.addEventListener('click', function() {
+                        openDescriptionModal(i - 1);
                     });
                 }
             }
@@ -1576,6 +1795,14 @@
             
             // Перезагружаем список фотографий
             loadPhotosList(paintingNumber);
+            
+            // Восстанавливаем выделение на новой позиции
+            setTimeout(() => {
+                const newRadio = document.querySelector(`input[name="photo-${paintingNumber}"][value="${newIndex}"]`);
+                if (newRadio) {
+                    newRadio.checked = true;
+                }
+            }, 100);
         }
 
         // Удалить картину
@@ -1658,7 +1885,7 @@
                             price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
                             mainImage: '',
                             images: [],
-                            soldOut: paintingNumber === 1,
+                            soldOut: false,
                             description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
                         };
                     }
@@ -2268,7 +2495,7 @@
                     price: paintingNumber === 5 ? "2 160 ₽" : "3 450 ₽",
                     mainImage: images[0],
                     images: images,
-                    soldOut: paintingNumber === 1,
+                    soldOut: false,
                     description: "Акрил, мраморная пыль и пигмент на холсте, 2024"
                 };
             });
@@ -2287,6 +2514,7 @@
             initNavigation();
             initForms();
             initContactsModal();
+            initDescriptionModal();
             
             // Инициализируем админ-панель
             initAdminPanel();
@@ -2333,6 +2561,7 @@
                         <div class="product-photos-count">Фото: ${item.images.length}</div>
                     </div>
                     ${item.soldOut ? '<div class="sold-out">Продано</div>' : ''}
+                    ${item.overlay && item.overlay.type !== 'none' ? `<div class="painting-overlay ${item.overlay.type}" style="background-color: ${item.overlay.color};">${item.overlay.text}</div>` : ''}
                 `;
                 
                 galleryItem.addEventListener('click', function() {
@@ -2341,6 +2570,11 @@
                 
                 galleryContainer.appendChild(galleryItem);
             });
+        }
+
+        // Обновление отображения галереи
+        function updateGalleryDisplay() {
+            initGallery();
         }
 
         // Инициализация навигации
@@ -2421,7 +2655,7 @@
                         } else {
                             // Для ПК показываем полную информацию
                             if (index === 0) { // Instagram
-                                link.textContent = '@janart_home';
+                                link.textContent = '@janart_studio';
                             } else if (index === 1) { // WhatsApp
                                 link.textContent = '+7 (904) 606 81 07';
                             } else if (index === 2) { // Email
@@ -2472,6 +2706,131 @@
                 contactsModal.addEventListener('click', function(e) {
                     if (e.target === contactsModal) {
                         contactsModal.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Инициализация модального окна редактирования описания картины
+        function initDescriptionModal() {
+            const descriptionModal = document.getElementById('description-modal');
+            const closeDescription = document.getElementById('close-description');
+            const saveDescription = document.getElementById('save-description');
+            const cancelDescription = document.getElementById('cancel-description');
+            const shapeRadios = document.querySelectorAll('input[name="shape-type"]');
+            const overlaySettings = document.getElementById('overlay-settings');
+            const colorPresets = document.querySelectorAll('.color-preset');
+            const colorInput = document.getElementById('overlay-color');
+            
+            let currentPaintingIndex = null;
+            
+            // Обработчик изменения формы таблички
+            shapeRadios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.value === 'none') {
+                        overlaySettings.style.display = 'none';
+                    } else {
+                        overlaySettings.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Обработчики для цветовых пресетов
+            colorPresets.forEach(preset => {
+                preset.addEventListener('click', function() {
+                    const color = this.getAttribute('data-color');
+                    colorInput.value = color;
+                    
+                    // Убираем активный класс с всех пресетов
+                    colorPresets.forEach(p => p.classList.remove('active'));
+                    // Добавляем активный класс к выбранному
+                    this.classList.add('active');
+                });
+            });
+            
+            // Обработчик изменения цвета через input
+            colorInput.addEventListener('change', function() {
+                // Убираем активный класс с всех пресетов
+                colorPresets.forEach(p => p.classList.remove('active'));
+            });
+            
+            // Функция открытия модального окна
+            window.openDescriptionModal = function(paintingIndex) {
+                currentPaintingIndex = paintingIndex;
+                const painting = galleryItems[paintingIndex];
+                
+                if (painting) {
+                    document.getElementById('painting-title').value = painting.title || '';
+                    document.getElementById('painting-price').value = painting.price || '';
+                    document.getElementById('painting-size').value = painting.size || '';
+                    document.getElementById('painting-description').value = painting.description || '';
+                    
+                    // Устанавливаем значения для таблички
+                    const overlayData = painting.overlay || { type: 'none', text: '', color: '#ff6b6b' };
+                    document.querySelector(`input[name="shape-type"][value="${overlayData.type}"]`).checked = true;
+                    document.getElementById('overlay-text').value = overlayData.text || '';
+                    document.getElementById('overlay-color').value = overlayData.color || '#ff6b6b';
+                    
+                    // Показываем/скрываем настройки таблички
+                    if (overlayData.type === 'none') {
+                        overlaySettings.style.display = 'none';
+                    } else {
+                        overlaySettings.style.display = 'block';
+                    }
+                }
+                
+                descriptionModal.classList.add('active');
+            };
+            
+            // Обработчики кнопок
+            if (closeDescription) {
+                closeDescription.addEventListener('click', function() {
+                    descriptionModal.classList.remove('active');
+                });
+            }
+            
+            if (cancelDescription) {
+                cancelDescription.addEventListener('click', function() {
+                    descriptionModal.classList.remove('active');
+                });
+            }
+            
+            if (saveDescription) {
+                saveDescription.addEventListener('click', function() {
+                    if (currentPaintingIndex !== null) {
+                        const painting = galleryItems[currentPaintingIndex];
+                        
+                        // Обновляем данные картины
+                        painting.title = document.getElementById('painting-title').value;
+                        painting.price = document.getElementById('painting-price').value;
+                        painting.size = document.getElementById('painting-size').value;
+                        painting.description = document.getElementById('painting-description').value;
+                        
+                        // Обновляем данные таблички
+                        const selectedShape = document.querySelector('input[name="shape-type"]:checked').value;
+                        painting.overlay = {
+                            type: selectedShape,
+                            text: document.getElementById('overlay-text').value,
+                            color: document.getElementById('overlay-color').value
+                        };
+                        
+                        // Сохраняем в localStorage
+                        localStorage.setItem('galleryItems', JSON.stringify(galleryItems));
+                        
+                        // Обновляем отображение
+                        updateGalleryDisplay();
+                        updateAdminPanel();
+                        
+                        descriptionModal.classList.remove('active');
+                    }
+                });
+            }
+            
+            // Закрытие по клику вне модального окна
+            if (descriptionModal) {
+                descriptionModal.addEventListener('click', function(e) {
+                    if (e.target === descriptionModal) {
+                        descriptionModal.classList.remove('active');
                     }
                 });
             }

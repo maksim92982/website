@@ -38,9 +38,10 @@
         "type": "rounded",
         "text": "скидка",
         "color": "#977220"
-      }
+      },
+      "hidden": true
     }
   ],
-  "lastUpdated": "2025-09-13T14:17:49.038Z",
+  "lastUpdated": "2025-09-13T14:43:36.073Z",
   "version": "1.0"
 }

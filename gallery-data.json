@@ -23,9 +23,9 @@
     },
     {
       "id": 2,
-      "title": "лев121212",
+      "title": "Вторая",
       "size": "50 x 70 см",
-      "price": "2 650 $",
+      "price": "2 650 р",
       "mainImage": "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
       "images": [
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/1.jpg",
@@ -33,14 +33,14 @@
         "https://raw.githubusercontent.com/maksim92982/website/main/images/gallery/2/3.jpg"
       ],
       "soldOut": false,
-      "description": "Тестовое описание. 2025 ",
+      "description": "Тестовое описание. 2022",
       "overlay": {
-        "type": "square",
-        "text": "скидка111",
-        "color": "#202897"
+        "type": "rounded",
+        "text": "1+1",
+        "color": "#18c300"
       }
     }
   ],
-  "lastUpdated": "2025-09-13T14:45:44.195Z",
+  "lastUpdated": "2025-09-13T15:06:17.112Z",
   "version": "1.0"
 }

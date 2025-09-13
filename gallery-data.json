@@ -35,12 +35,12 @@
       "soldOut": false,
       "description": "Акрил, мраморная пыль и пигмент на холсте, 2024",
       "overlay": {
-        "type": "none",
-        "text": "РАСПРОДАЖА",
-        "color": "#ff6b6b"
+        "type": "rounded",
+        "text": "1212",
+        "color": "#4ecdc4"
       }
     }
   ],
-  "lastUpdated": "2025-09-13T12:02:46.096Z",
+  "lastUpdated": "2025-09-13T12:10:23.552Z",
   "version": "1.0"
 }

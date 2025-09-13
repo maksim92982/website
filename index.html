@@ -140,9 +140,52 @@
 
         .github-config {
             background: #f8f9fa;
-            padding: 15px;
             border-radius: 8px;
             margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .github-config-header {
+            background: #e9ecef;
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+            transition: background-color 0.3s ease;
+        }
+        
+        .github-config-header:hover {
+            background: #dee2e6;
+        }
+        
+        .github-config-header h3 {
+            margin: 0;
+            color: #333;
+        }
+        
+        .collapse-arrow {
+            font-size: 16px;
+            transition: transform 0.3s ease;
+            color: #666;
+        }
+        
+        .github-config.collapsed .collapse-arrow {
+            transform: rotate(-90deg);
+        }
+        
+        .github-config-content {
+            padding: 15px;
+            transition: max-height 0.3s ease, padding 0.3s ease, opacity 0.3s ease;
+            overflow: hidden;
+            opacity: 1;
+        }
+        
+        .github-config.collapsed .github-config-content {
+            max-height: 0;
+            padding: 0 15px;
+            opacity: 0;
         }
 
         .progress-bar {
@@ -1055,16 +1098,21 @@
             <button class="admin-close" id="admin-close">✕</button>
         </div>
         
-        <div class="github-config">
-            <h3>Настройки GitHub</h3>
-            <div class="admin-form">
-                <input type="password" id="github-token" class="admin-input" placeholder="GitHub Personal Access Token" value="">
-                <input type="text" id="github-owner" class="admin-input" placeholder="Владелец репозитория (username)" value="maksim92982">
-                <input type="text" id="github-repo" class="admin-input" placeholder="Название репозитория" value="website">
-                <input type="text" id="github-path" class="admin-input" placeholder="Путь к папке" value="images/gallery">
-                <div id="config-status" class="config-status"></div>
-                <button class="admin-btn" id="save-github-config">Сохранить настройки GitHub</button>
-                <button class="admin-btn" id="test-connection">Проверить подключение</button>
+        <div class="github-config collapsible">
+            <div class="github-config-header" id="github-config-header">
+                <h3>Настройки GitHub</h3>
+                <span class="collapse-arrow" id="github-collapse-arrow">▼</span>
+            </div>
+            <div class="github-config-content" id="github-config-content">
+                <div class="admin-form">
+                    <input type="password" id="github-token" class="admin-input" placeholder="GitHub Personal Access Token" value="">
+                    <input type="text" id="github-owner" class="admin-input" placeholder="Владелец репозитория (username)" value="maksim92982">
+                    <input type="text" id="github-repo" class="admin-input" placeholder="Название репозитория" value="website">
+                    <input type="text" id="github-path" class="admin-input" placeholder="Путь к папке" value="images/gallery">
+                    <div id="config-status" class="config-status"></div>
+                    <button class="admin-btn" id="save-github-config">Сохранить настройки GitHub</button>
+                    <button class="admin-btn" id="test-connection">Проверить подключение</button>
+                </div>
             </div>
         </div>
 
@@ -2063,6 +2111,32 @@
             
             // Загружаем сохраненные настройки
             loadAdminSettings();
+            
+            // Настройка сворачивания блока GitHub
+            const githubConfigHeader = document.getElementById('github-config-header');
+            const githubConfigContent = document.getElementById('github-config-content');
+            const githubCollapseArrow = document.getElementById('github-collapse-arrow');
+            
+            if (githubConfigHeader && githubConfigContent && githubCollapseArrow) {
+                // Устанавливаем начальную высоту контента
+                githubConfigContent.style.maxHeight = githubConfigContent.scrollHeight + 'px';
+                
+                githubConfigHeader.addEventListener('click', function() {
+                    const githubConfig = document.querySelector('.github-config');
+                    
+                    if (githubConfig.classList.contains('collapsed')) {
+                        // Разворачиваем
+                        githubConfig.classList.remove('collapsed');
+                        githubConfigContent.style.maxHeight = githubConfigContent.scrollHeight + 'px';
+                        githubCollapseArrow.textContent = '▼';
+                    } else {
+                        // Сворачиваем
+                        githubConfig.classList.add('collapsed');
+                        githubConfigContent.style.maxHeight = '0px';
+                        githubCollapseArrow.textContent = '▶';
+                    }
+                });
+            }
             
             // Настройка кнопки закрытия
             const adminCloseBtn = document.getElementById('admin-close');

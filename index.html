@@ -688,13 +688,6 @@
             overflow-y: auto;
         }
         
-        .close-description {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 24px;
-            cursor: pointer;
-        }
         
         .form-group {
             margin-bottom: 20px;
@@ -1242,7 +1235,6 @@
     <!-- Модальное окно редактирования описания картины -->
     <div class="description-modal" id="description-modal">
         <div class="description-content">
-            <div class="close-description" id="close-description">✕</div>
             <h2>Редактирование описания картины</h2>
             
             <div class="form-group">
@@ -2695,13 +2687,11 @@
         function initDescriptionModal() {
             console.log('=== Инициализация модального окна описания ===');
             const descriptionModal = document.getElementById('description-modal');
-            const closeDescription = document.getElementById('close-description');
             const saveDescription = document.getElementById('save-description');
             const cancelDescription = document.getElementById('cancel-description');
             
             console.log('Элементы модального окна:', {
                 descriptionModal,
-                closeDescription,
                 saveDescription,
                 cancelDescription
             });
@@ -2794,11 +2784,6 @@
             };
             
             // Обработчики кнопок
-            if (closeDescription) {
-                closeDescription.addEventListener('click', function() {
-                    descriptionModal.classList.remove('active');
-                });
-            }
             
             if (cancelDescription) {
                 cancelDescription.addEventListener('click', function() {
@@ -2897,13 +2882,7 @@
             }
             
             // Закрытие по клику вне модального окна
-            if (descriptionModal) {
-                descriptionModal.addEventListener('click', function(e) {
-                    if (e.target === descriptionModal) {
-                        descriptionModal.classList.remove('active');
-                    }
-                });
-            }
+            // Модальное окно закрывается только при нажатии кнопок "Отмена" или "Сохранить"
         }
 
         // Инициализация форм

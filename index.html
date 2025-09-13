@@ -2181,7 +2181,8 @@
         async function loadGalleryDataFromGitHub() {
             try {
                 const filePath = 'gallery-data.json';
-                const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/main/${filePath}`);
+                const timestamp = new Date().getTime();
+                const response = await fetch(`https://raw.githubusercontent.com/${GITHUB_CONFIG.owner}/${GITHUB_CONFIG.repo}/main/${filePath}?t=${timestamp}`);
                 
                 if (response.ok) {
                     const data = await response.json();
@@ -2456,6 +2457,9 @@
 
         // Инициализация при загрузке страницы
         document.addEventListener('DOMContentLoaded', async function() {
+            // Принудительно обновляем данные галереи из GitHub
+            await loadGalleryDataFromGitHub();
+            
             // Инициализируем данные галереи
             await initializeGalleryItems();
             
@@ -2473,6 +2477,12 @@
             
             // Инициализируем модальное окно описания после админ-панели
             initDescriptionModal();
+            
+            // Принудительно обновляем данные при обновлении страницы
+            window.addEventListener('beforeunload', function() {
+                // Очищаем кэш localStorage для принудительного обновления
+                localStorage.removeItem('galleryData');
+            });
             
             document.getElementById('main-hero').addEventListener('click', function() {
                 showPage('gallery');
@@ -2920,6 +2930,13 @@
             const targetPage = document.getElementById(`${pageId}-page`);
             if (targetPage) {
                 targetPage.style.display = 'block';
+            }
+            
+            // Принудительно обновляем данные при переходе на галерею
+            if (pageId === 'gallery') {
+                loadGalleryDataFromGitHub().then(() => {
+                    initGallery();
+                });
             }
             
             // Обновляем URL

@@ -2924,6 +2924,11 @@
         
         // Обновить URL
         function updateURL(page) {
+            // Не обновляем URL если открыта админ-панель
+            if (window.location.hash === '#admin12345') {
+                return;
+            }
+            
             const baseURL = window.location.origin + window.location.pathname;
             let newURL = baseURL;
             
@@ -2952,6 +2957,13 @@
         // Обработчик изменения URL
         function handleURLChange() {
             const hash = window.location.hash.substring(1);
+            
+            // Проверяем, не админ-панель ли это
+            if (hash === 'admin12345') {
+                showAdminPanel();
+                return;
+            }
+            
             let page = 'home';
             
             switch(hash) {
